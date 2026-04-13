@@ -1,0 +1,1 @@
+& "$PSScriptRoot\tools\dev\stop-dev.ps1"

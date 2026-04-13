@@ -1,0 +1,1 @@
+& "$PSScriptRoot\tools\dev\start-dev.ps1"

@@ -1,0 +1,13 @@
+﻿{
+    "startedAt":  "2026-04-14T04:08:16",
+    "frontendPid":  3480,
+    "backendPid":  35692,
+    "frontendUrl":  "http://127.0.0.1:3000/resume%20analyzer.html",
+    "backendUrl":  "http://127.0.0.1:8001/resume%20analyzer.html",
+    "logs":  {
+                 "frontendStdout":  "C:\\ResumePro\\.runtime\\frontend.out.log",
+                 "frontendStderr":  "C:\\ResumePro\\.runtime\\frontend.err.log",
+                 "backendStdout":  "C:\\ResumePro\\.runtime\\backend.out.log",
+                 "backendStderr":  "C:\\ResumePro\\.runtime\\backend.err.log"
+             }
+}

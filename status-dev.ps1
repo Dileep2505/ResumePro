@@ -1,0 +1,1 @@
+& "$PSScriptRoot\tools\dev\status-dev.ps1"
