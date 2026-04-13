@@ -7,7 +7,8 @@ const AUTH_SESSION_KEY = "resumepro_session";
 const AUTH_PROFILE_KEY_PREFIX = "resumepro_profile_";
 const AUTH_RESET_TOKENS_KEY = "resumepro_reset_tokens";
 const APP_STATE_KEY_PREFIX = "resumepro_app_state_";
-const BACKEND_BASE_URL = "http://127.0.0.1:8001";
+const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
+const BACKEND_BASE_URL = (RESUMEPRO_CONFIG.backendBaseUrl || "http://127.0.0.1:8001").replace(/\/+$/, "");
 const RESUME_TEMPLATES = ["jonathan", "robert", "firstlast", "omar"];
 const SOFTWARE_SKILL_CATEGORIES = [
   {
@@ -72,7 +73,6 @@ let achievementEditIndex = -1;
 // Get your Client ID from: https://console.cloud.google.com/
 // See GOOGLE_OAUTH_SETUP.md for detailed instructions
 // Example format: const GOOGLE_CLIENT_ID = "123456789-abcdefghijk.apps.googleusercontent.com";
-const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
 const GOOGLE_CLIENT_ID = RESUMEPRO_CONFIG.googleClientId || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"; // REPLACE with your real Client ID from Google Cloud
 const GOOGLE_ALLOWED_ORIGINS = RESUMEPRO_CONFIG.googleAllowedOrigins || [
   "http://127.0.0.1:8000",
@@ -4468,7 +4468,7 @@ async function runAtsScore(jobDescription = "", options = {}) {
   }
 
   try {
-    const response = await postJson("http://127.0.0.1:8001/resume/ats-score", {
+    const response = await postJson(`${BACKEND_BASE_URL}/resume/ats-score`, {
       resume_text: appState.raw_text,
       resume_data: useResumeData ? appState.resume_data : {},
       job_description: jobDescription,
@@ -4498,7 +4498,7 @@ async function runRewriteSuggestions(jobDescription = "", options = {}) {
   }
 
   try {
-    const response = await postJson("http://127.0.0.1:8001/ai/rewrite-suggestions", {
+    const response = await postJson(`${BACKEND_BASE_URL}/ai/rewrite-suggestions`, {
       resume_text: appState.raw_text,
       resume_data: appState.resume_data,
       job_description: jobDescription,
@@ -6361,7 +6361,7 @@ async function uploadFile(file) {
   formData.append("file", file);
 
   try {
-    const res = await fetch("http://127.0.0.1:8001/resume/analyze", {
+    const res = await fetch(`${BACKEND_BASE_URL}/resume/analyze`, {
       method: "POST",
       body: formData
     });
@@ -6385,11 +6385,11 @@ async function uploadFile(file) {
     const data = await res.json();
     const skills = data.skills || [];
 
-    const jobData = await postJson("http://127.0.0.1:8001/jobs/match", skills);
-    const careerData = await postJson("http://127.0.0.1:8001/career/explore", { matches: jobData.matches || [] });
+    const jobData = await postJson(`${BACKEND_BASE_URL}/jobs/match`, skills);
+    const careerData = await postJson(`${BACKEND_BASE_URL}/career/explore`, { matches: jobData.matches || [] });
     const topMatch = (jobData.matches || [])[0] || {};
     const jobSkills = Array.from(new Set([...(topMatch.missing_skills || []), ...skills]));
-    const optData = await postJson("http://127.0.0.1:8001/optimizer/optimize", {
+    const optData = await postJson(`${BACKEND_BASE_URL}/optimizer/optimize`, {
       user_skills: skills,
       job_skills: jobSkills,
     });
@@ -6626,7 +6626,7 @@ async function analyzeJD() {
 
   let jobSkills = [];
   try {
-    const jdResponse = await fetch("http://127.0.0.1:8001/resume/jd/analyze", {
+    const jdResponse = await fetch(`${BACKEND_BASE_URL}/resume/jd/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jd_text: jdText })
@@ -6640,7 +6640,7 @@ async function analyzeJD() {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8001/optimizer/optimize", {
+    const response = await fetch(`${BACKEND_BASE_URL}/optimizer/optimize`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -6846,11 +6846,11 @@ async function optimizeBuilderResume95() {
 
   try {
     const draft = getStructuredResumeData({ withDefaults: false });
-    const jdData = await postJson("http://127.0.0.1:8001/resume/jd/analyze", { jd_text: jdText });
+    const jdData = await postJson(`${BACKEND_BASE_URL}/resume/jd/analyze`, { jd_text: jdText });
     const jobSkills = normalizeList(jdData?.job_skills || []);
     const userSkills = uniqueNormalizedLines(draft.skills || []);
 
-    const optData = await postJson("http://127.0.0.1:8001/optimizer/optimize", {
+    const optData = await postJson(`${BACKEND_BASE_URL}/optimizer/optimize`, {
       user_skills: userSkills,
       job_skills: jobSkills,
     });
