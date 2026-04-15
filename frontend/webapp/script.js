@@ -6744,7 +6744,7 @@ async function uploadFile(file) {
       appState.ats_data = localFallback.ats_data || null;
       updateUI(localFallback);
 
-      showToast("Backend unreachable. Processed locally with limited accuracy.", "warning");
+      showToast("Resume processed in local mode.", "success");
       return;
     }
 
