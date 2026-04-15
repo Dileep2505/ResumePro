@@ -1,4 +1,7 @@
-from datetime import datetime
+#!/usr/bin/env python
+"""Fix authentication with proper bcrypt implementation"""
+
+corrected = '''from datetime import datetime
 import bcrypt
 import logging
 
@@ -211,3 +214,8 @@ def get_user_searches(email: str, limit: int = 20, db: Session = Depends(get_db)
             for row in rows
         ]
     }
+'''
+
+with open('backend/api/user_api.py', 'w') as f:
+    f.write(corrected)
+print('✓ Fixed user_api.py with proper bcrypt implementation')
