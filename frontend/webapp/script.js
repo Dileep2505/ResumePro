@@ -1597,8 +1597,7 @@ async function registerUser() {
   }
 
   if (backendResp.status === 404) {
-    showToast("Auth service not found on backend URL. Check deployment backend path.", 'error');
-    return;
+    showToast("Auth service not found on backend URL. Using local mode.", 'warning');
   }
 
   if (backendResp.networkError) {
@@ -1652,8 +1651,7 @@ async function loginUser() {
   }
 
   if (backendResp.status === 404) {
-    showToast("Auth service not found on backend URL. Check deployment backend path.", 'error');
-    return;
+    console.warn("Login API route not found on backend host; trying local mode");
   }
 
   if (backendResp.networkError) {
