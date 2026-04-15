@@ -11,4 +11,10 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: resumepro-db
+          property: connectionString
+
+  - type: pgsql
+    name: resumepro-db
+    plan: free
