@@ -24,7 +24,20 @@ WEBAPP_DIR = Path(__file__).resolve().parent.parent / "frontend" / "webapp"
 # ✅ ENABLE CORS (for frontend connection)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://resumepro2.me",
+        "https://www.resumepro2.me",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:8001",
+        "http://127.0.0.1:8001",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:5501",
+        "http://127.0.0.1:5501",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
