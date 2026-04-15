@@ -505,28 +505,43 @@ function firstName(fullName) {
 }
 
 async function postJson(url, payload) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  const candidateUrls = buildBackendCandidateUrls(url);
+  let lastError = "Network request failed";
 
-  if (!response.ok) {
-    throw new Error(`${url} failed with status ${response.status}`);
+  for (const candidateUrl of candidateUrls) {
+    try {
+      const response = await fetch(candidateUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`${candidateUrl} failed with status ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      lastError = error?.message || "Network request failed";
+    }
   }
 
-  return response.json();
+  throw new Error(lastError);
 }
 
-async function postJsonAllowStatus(url, payload) {
+function buildBackendCandidateUrls(url) {
   const normalizedInputUrl = String(url || "").trim();
   const requestPath = normalizedInputUrl.startsWith(BACKEND_BASE_URL)
     ? normalizedInputUrl.slice(BACKEND_BASE_URL.length)
     : normalizedInputUrl;
   const shouldUseCandidates = normalizedInputUrl.startsWith(BACKEND_BASE_URL);
-  const candidateUrls = shouldUseCandidates
+  return shouldUseCandidates
     ? BACKEND_CANDIDATES.map((base) => `${base}${requestPath.startsWith("/") ? requestPath : `/${requestPath}`}`)
     : [normalizedInputUrl];
+}
+
+async function postJsonAllowStatus(url, payload) {
+  const candidateUrls = buildBackendCandidateUrls(url);
 
   let lastError = "Network request failed";
   for (const candidateUrl of candidateUrls) {
@@ -535,6 +550,45 @@ async function postJsonAllowStatus(url, payload) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+      });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      return {
+        ok: response.ok,
+        status: response.status,
+        data,
+        networkError: false,
+        url: candidateUrl,
+      };
+    } catch (error) {
+      lastError = error?.message || "Network request failed";
+    }
+  }
+
+  return {
+    ok: false,
+    status: 0,
+    data: {},
+    networkError: true,
+    error: lastError,
+  };
+}
+
+async function postFormAllowStatus(url, formData) {
+  const candidateUrls = buildBackendCandidateUrls(url);
+
+  let lastError = "Network request failed";
+  for (const candidateUrl of candidateUrls) {
+    try {
+      const response = await fetch(candidateUrl, {
+        method: "POST",
+        body: formData,
       });
 
       let data = {};
@@ -6414,28 +6468,16 @@ async function uploadFile(file) {
   formData.append("file", file);
 
   try {
-    const res = await fetch(`${BACKEND_BASE_URL}/resume/analyze`, {
-      method: "POST",
-      body: formData
-    });
-
-    if (!res.ok) {
-      let message = `Resume analysis failed with status ${res.status}`;
-      try {
-        const errorData = await res.json();
-        if (errorData && errorData.detail) {
-          message = errorData.detail;
-        }
-      } catch {
-        const errorText = await res.text();
-        if (errorText) {
-          message = errorText;
-        }
+    const uploadResp = await postFormAllowStatus(`${BACKEND_BASE_URL}/resume/analyze`, formData);
+    if (!uploadResp.ok) {
+      if (uploadResp.networkError) {
+        throw new Error(`Upload failed: backend unreachable (${uploadResp.error || "network error"})`);
       }
-      throw new Error(message);
+      const detail = uploadResp.data?.detail || "";
+      throw new Error(detail || `Resume analysis failed with status ${uploadResp.status}`);
     }
 
-    const data = await res.json();
+    const data = uploadResp.data || {};
     const skills = data.skills || [];
 
     const jobData = await postJson(`${BACKEND_BASE_URL}/jobs/match`, skills);
@@ -6482,7 +6524,7 @@ async function uploadFile(file) {
     setUploadButtonLabel("Browse files");
     setUploadedFileName("None");
     setUploadStatus(`Present uploaded resume: none • Upload failed: ${err?.message || "Please try again."}`);
-    alert(err?.message || "Backend not reachable");
+    showToast(err?.message || "Backend not reachable", "error");
   } finally {
     isUploading = false;
     const input = document.getElementById("resumeInput");
