@@ -6445,6 +6445,214 @@ function setUploadedFileName(name) {
   if (fallbackNameEl) fallbackNameEl.textContent = value;
 }
 
+function guessFileExtension(fileName) {
+  const value = String(fileName || "").toLowerCase();
+  const idx = value.lastIndexOf(".");
+  return idx >= 0 ? value.slice(idx + 1) : "";
+}
+
+function flattenSoftwareSkillKeywords() {
+  const all = [];
+  for (const category of SOFTWARE_SKILL_CATEGORIES || []) {
+    for (const skill of category.skills || []) {
+      const normalized = String(skill || "").trim().toLowerCase();
+      if (normalized) all.push(normalized);
+    }
+  }
+  return Array.from(new Set(all));
+}
+
+function extractSkillsFromTextLocal(text) {
+  const normalized = String(text || "").toLowerCase();
+  const found = [];
+  const keywords = flattenSoftwareSkillKeywords();
+
+  for (const keyword of keywords) {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i");
+    if (pattern.test(normalized)) {
+      found.push(keyword);
+    }
+  }
+
+  return found.slice(0, 40);
+}
+
+function extractResumeDataLocal(text, fileName) {
+  const value = String(text || "");
+  const lines = value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const emailMatch = value.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
+  const phoneMatch = value.match(/(\+?\d[\d\-\s]{8,}\d)/);
+
+  let name = "";
+  for (const line of lines.slice(0, 8)) {
+    if (emailMatch && line.includes(emailMatch[0])) continue;
+    if (phoneMatch && line.includes(phoneMatch[0])) continue;
+    if (/^https?:\/\//i.test(line)) continue;
+    if (/\d/.test(line)) continue;
+    if (line.split(/\s+/).length >= 2 && line.split(/\s+/).length <= 4) {
+      name = line;
+      break;
+    }
+  }
+
+  if (!name) {
+    name = String(fileName || "").replace(/\.[^.]+$/, "") || "Candidate";
+  }
+
+  return {
+    name,
+    email: emailMatch ? emailMatch[0] : "",
+    phone: phoneMatch ? phoneMatch[0] : "",
+    education: [],
+    projects: [],
+    experience: [],
+    certifications: [],
+    summary: "",
+  };
+}
+
+function buildLocalAtsData(text, skills) {
+  const normalized = String(text || "").toLowerCase();
+  const hasSummary = /\b(summary|profile|objective)\b/.test(normalized);
+  const hasExperience = /\b(experience|work experience|internship)\b/.test(normalized);
+  const hasProjects = /\b(project|projects)\b/.test(normalized);
+  const hasEducation = /\b(education|university|college|school|btech|b\.tech|bachelor|master)\b/.test(normalized);
+
+  let score = 25;
+  if (skills.length >= 3) score += 15;
+  if (hasSummary) score += 10;
+  if (hasExperience) score += 15;
+  if (hasProjects) score += 10;
+  if (hasEducation) score += 10;
+  if (normalized.length > 600) score += 10;
+  score = Math.max(0, Math.min(95, score));
+
+  return {
+    score,
+    label: score >= 75 ? "Strong" : score >= 50 ? "Good" : "Needs work",
+    mode: "local-fallback",
+    resume_skills: skills,
+    detected_sections: {
+      summary: hasSummary,
+      education: hasEducation,
+      experience: hasExperience,
+      projects: hasProjects,
+      skills: skills.length > 0,
+    },
+    recommendations: [
+      "Server is unreachable; this is a local estimate.",
+      "Add measurable impact bullets in experience/projects.",
+      "Include keywords from your target role JD.",
+    ],
+  };
+}
+
+let pdfJsLoadPromise = null;
+function ensurePdfJsLoaded() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if (pdfJsLoadPromise) return pdfJsLoadPromise;
+
+  pdfJsLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js";
+    script.onload = () => {
+      if (!window.pdfjsLib) {
+        reject(new Error("PDF parser unavailable"));
+        return;
+      }
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+      resolve(window.pdfjsLib);
+    };
+    script.onerror = () => reject(new Error("Could not load PDF parser"));
+    document.head.appendChild(script);
+  });
+
+  return pdfJsLoadPromise;
+}
+
+let mammothLoadPromise = null;
+function ensureMammothLoaded() {
+  if (window.mammoth) return Promise.resolve(window.mammoth);
+  if (mammothLoadPromise) return mammothLoadPromise;
+
+  mammothLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js";
+    script.onload = () => {
+      if (!window.mammoth) {
+        reject(new Error("DOCX parser unavailable"));
+        return;
+      }
+      resolve(window.mammoth);
+    };
+    script.onerror = () => reject(new Error("Could not load DOCX parser"));
+    document.head.appendChild(script);
+  });
+
+  return mammothLoadPromise;
+}
+
+async function extractResumeTextLocally(file) {
+  const extension = guessFileExtension(file?.name || "");
+
+  if (["txt", "md", "csv", "json"].includes(extension)) {
+    return await file.text();
+  }
+
+  if (extension === "pdf") {
+    const pdfjsLib = await ensurePdfJsLoaded();
+    const bytes = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const chunks = [];
+    for (let i = 1; i <= pdf.numPages; i += 1) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = (textContent.items || []).map((item) => item.str || "").join(" ");
+      chunks.push(pageText);
+    }
+    return chunks.join("\n").trim();
+  }
+
+  if (["docx", "doc"].includes(extension)) {
+    const mammoth = await ensureMammothLoaded();
+    const buffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
+    return String(result?.value || "").trim();
+  }
+
+  return "";
+}
+
+async function analyzeResumeLocally(file) {
+  try {
+    const localText = await extractResumeTextLocally(file);
+    if (!localText) return null;
+
+    const skills = extractSkillsFromTextLocal(localText);
+    const resume_data = extractResumeDataLocal(localText, file?.name || "");
+    const ats_data = buildLocalAtsData(localText, skills);
+
+    return {
+      skills,
+      resume_data,
+      raw_text: localText,
+      ats_data,
+      job_data: { matches: [] },
+      career_data: { eligible: [], nearly_eligible: [], not_ready: [] },
+      opt_data: { optimized_skills: skills.slice(0, 10), added_keywords: [], suggestions: [] },
+    };
+  } catch (error) {
+    console.warn("Local resume analysis failed:", error?.message || error);
+    return null;
+  }
+}
+
 // MAIN upload handler
 async function uploadFile(file) {
   if (blockGuestWriteAccess("file upload")) return;
@@ -6521,6 +6729,25 @@ async function uploadFile(file) {
 
   } catch (err) {
     console.error("Upload error:", err);
+
+    const localFallback = await analyzeResumeLocally(file);
+    if (localFallback) {
+      const uploadLabel = String(localFallback?.resume_data?.name || file?.name || "Uploaded Resume").trim();
+      const atsScore = Number(localFallback?.ats_data?.score ?? 0);
+
+      setUploadButtonLabel("Upload another");
+      setUploadedFileName(uploadLabel);
+      setUploadStatus(`Present uploaded resume: ${uploadLabel} • ATS Score (Local): ${Number.isFinite(atsScore) ? atsScore : 0}`);
+
+      Object.assign(appState, localFallback);
+      appState.base_ats_data = localFallback.ats_data || null;
+      appState.ats_data = localFallback.ats_data || null;
+      updateUI(localFallback);
+
+      showToast("Backend unreachable. Processed locally with limited accuracy.", "warning");
+      return;
+    }
+
     setUploadButtonLabel("Browse files");
     setUploadedFileName("None");
     setUploadStatus(`Present uploaded resume: none • Upload failed: ${err?.message || "Please try again."}`);
