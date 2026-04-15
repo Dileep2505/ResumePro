@@ -9,6 +9,12 @@ const AUTH_RESET_TOKENS_KEY = "resumepro_reset_tokens";
 const APP_STATE_KEY_PREFIX = "resumepro_app_state_";
 const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
 const BACKEND_BASE_URL = (RESUMEPRO_CONFIG.backendBaseUrl || "http://127.0.0.1:8001").replace(/\/+$/, "");
+const BACKEND_FALLBACK_URLS = (RESUMEPRO_CONFIG.backendFallbackUrls || [])
+  .map((url) => String(url || "").trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+const BACKEND_CANDIDATES = [BACKEND_BASE_URL, ...BACKEND_FALLBACK_URLS].filter(
+  (url, index, arr) => arr.indexOf(url) === index
+);
 const RESUME_TEMPLATES = ["jonathan", "robert", "firstlast", "omar"];
 const SOFTWARE_SKILL_CATEGORIES = [
   {
@@ -513,20 +519,50 @@ async function postJson(url, payload) {
 }
 
 async function postJsonAllowStatus(url, payload) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  const normalizedInputUrl = String(url || "").trim();
+  const requestPath = normalizedInputUrl.startsWith(BACKEND_BASE_URL)
+    ? normalizedInputUrl.slice(BACKEND_BASE_URL.length)
+    : normalizedInputUrl;
+  const shouldUseCandidates = normalizedInputUrl.startsWith(BACKEND_BASE_URL);
+  const candidateUrls = shouldUseCandidates
+    ? BACKEND_CANDIDATES.map((base) => `${base}${requestPath.startsWith("/") ? requestPath : `/${requestPath}`}`)
+    : [normalizedInputUrl];
 
-  let data = {};
-  try {
-    data = await response.json();
-  } catch {
-    data = {};
+  let lastError = "Network request failed";
+  for (const candidateUrl of candidateUrls) {
+    try {
+      const response = await fetch(candidateUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      return {
+        ok: response.ok,
+        status: response.status,
+        data,
+        networkError: false,
+        url: candidateUrl,
+      };
+    } catch (error) {
+      lastError = error?.message || "Network request failed";
+    }
   }
 
-  return { ok: response.ok, status: response.status, data };
+  return {
+    ok: false,
+    status: 0,
+    data: {},
+    networkError: true,
+    error: lastError,
+  };
 }
 
 async function upsertBackendUser(user) {
@@ -1560,6 +1596,16 @@ async function registerUser() {
     return;
   }
 
+  if (backendResp.status === 404) {
+    showToast("Auth service not found on backend URL. Check deployment backend path.", 'error');
+    return;
+  }
+
+  if (backendResp.networkError) {
+    console.warn("Register API unreachable:", backendResp.error || "unknown error");
+    showToast("Backend is unreachable. Creating local account only.", 'warning');
+  }
+
   const users = getStoredUsers();
   if (users.some((user) => user.email === email)) {
     showToast("An account with this email already exists.", 'error');
@@ -1603,6 +1649,15 @@ async function loginUser() {
     renderAllPages(appState);
     window.scrollTo({ top: 0, behavior: "instant" });
     return;
+  }
+
+  if (backendResp.status === 404) {
+    showToast("Auth service not found on backend URL. Check deployment backend path.", 'error');
+    return;
+  }
+
+  if (backendResp.networkError) {
+    console.warn("Login API unreachable:", backendResp.error || "unknown error");
   }
 
   const users = getStoredUsers();

@@ -18,6 +18,9 @@
     "https://www.resumepro2.me"
   ],
   googlePreferredOrigin: isLocalHost ? "http://127.0.0.1:3000" : "https://resumepro2.me",
-  backendBaseUrl: defaultBackendBaseUrl
+  backendBaseUrl: defaultBackendBaseUrl,
+  backendFallbackUrls: [
+    "https://resumepro-api.onrender.com"
+  ]
   };
 })();
