@@ -1,3 +1,32 @@
+</body>
+<!-- About Modal -->
+<div id="about-modal" class="modal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+  <div style="background:#fff;color:#222;max-width:420px;width:90vw;padding:32px 24px 24px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;">
+    <button onclick="closeAboutModal()" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#888;">&times;</button>
+    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">About ResumePro</div>
+    <div style="font-size:14px;line-height:1.7;margin-bottom:8px;">
+      <b>ResumePro</b> is an AI-assisted resume platform that helps you analyze resumes, improve ATS scores, and find job matches based on your skills.<br><br>
+      <b>Features:</b><br>
+      • Resume analysis and structured parsing<br>
+      • Job matching with skill-gap insights<br>
+      • Career exploration and market trend views<br>
+      • JD-based resume optimization suggestions<br>
+      • Google OAuth support for secure login<br><br>
+      <b>Tech Stack:</b> FastAPI, SQLAlchemy, HTML/CSS/JS, SQLite/CSV<br>
+      <b>Deployment:</b> GitHub Pages (frontend), Render (backend)<br>
+      <b>Source & Docs:</b> See project README for details.
+    </div>
+  </div>
+</div>
+
+<script>
+function showAboutModal() {
+  document.getElementById('about-modal').style.display = 'flex';
+}
+function closeAboutModal() {
+  document.getElementById('about-modal').style.display = 'none';
+}
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>

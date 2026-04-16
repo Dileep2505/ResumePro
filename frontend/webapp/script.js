@@ -997,10 +997,9 @@ async function openSettingsSearchHistory() {
 
 function openAboutSettings() {
   closeSidebarSettingsMenu();
-  showPage("settings");
-  const aboutCard = document.getElementById("settings-about-card");
-  if (aboutCard) {
-    aboutCard.scrollIntoView({ behavior: "smooth", block: "center" });
+  // Show About modal with project details
+  if (typeof showAboutModal === 'function') {
+    showAboutModal();
   }
 }
 
@@ -1734,6 +1733,12 @@ function logoutUser() {
   clearSession();
   appState.profile = getDefaultProfile();
   setAppVisibility(false);
+  // Immediately show login/auth screen after logout
+  if (typeof showAuthScreen === 'function') {
+    showAuthScreen();
+  } else if (typeof showPage === 'function') {
+    showPage('auth');
+  }
 }
 
 function sendPasswordReset() {
@@ -7782,6 +7787,12 @@ window.logoutUser = function() {
   const session = getStoredSession();
   if (session && session.provider === 'google') {
     handleGoogleLogout();
+    // Immediately show login/auth screen after Google logout
+    if (typeof showAuthScreen === 'function') {
+      showAuthScreen();
+    } else if (typeof showPage === 'function') {
+      showPage('auth');
+    }
   } else {
     originalLogoutUser();
   }
