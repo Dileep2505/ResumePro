@@ -17,7 +17,17 @@ from backend.database.db import Base, engine
 from backend.database import models  # noqa: F401
 
 # ✅ CREATE APP
-app = FastAPI()
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app):
+    # Startup code
+    Base.metadata.create_all(bind=engine)
+    yield
+    # (Optional) Shutdown code
+
+app = FastAPI(lifespan=lifespan)
 
 WEBAPP_DIR = Path(__file__).resolve().parent.parent / "frontend" / "webapp"
 
@@ -52,9 +62,6 @@ app.include_router(career_router, prefix="/career")
 app.include_router(user_router, prefix="/users")
 
 
-@app.on_event("startup")
-def startup_create_tables():
-    Base.metadata.create_all(bind=engine)
 
 # ✅ ROOT CHECK
 @app.get("/")
