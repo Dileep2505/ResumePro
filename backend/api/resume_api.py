@@ -90,25 +90,65 @@ def _prepare_resume_data(resume_data):
     return resume_data
 
 
+from fastapi import APIRouter, UploadFile, File, HTTPException
+
+router = APIRouter()
+
+ALLOWED_TYPES = {"application/pdf", 
+                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
+
 @router.post("/analyze")
 async def analyze_resume(file: UploadFile = File(...)):
     try:
-        file_bytes = await file.read()
-        raw_text = extract_text(file_bytes)
-        resume_data = _prepare_resume_data(extract_resume_data(raw_text))
+        # Validate file type
+        if file.content_type not in ALLOWED_TYPES:
+            raise HTTPException(status_code=400, detail="Only PDF and DOCX files are allowed")
 
+        # Read file
+        file_bytes = await file.read()
+
+        # Validate size
+        if not file_bytes:
+            raise HTTPException(status_code=400, detail="Empty file uploaded")
+
+        if len(file_bytes) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File too large (max 5MB)")
+
+        # Extract text
+        raw_text = extract_text(file_bytes)
+        if not raw_text or not raw_text.strip():
+            raise HTTPException(status_code=400, detail="Could not extract text from resume")
+
+        # Extract structured data
+        extracted_data = extract_resume_data(raw_text)
+        resume_data = _prepare_resume_data(extracted_data or {})
+
+        # Skills + ATS
         skills = extract_skills_from_text(raw_text)
         ats_data = calculate_ats_score(raw_text, resume_data, None)
 
         return {
-            "skills": skills,
+            "skills": skills or [],
             "resume_data": resume_data,
             "raw_text": raw_text,
             "ats_data": ats_data,
         }
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail=f"Unable to read uploaded resume: {exc}") from exc
 
+    except HTTPException:
+        raise
+
+    except Exception as exc:
+        # Log the real error internally (important)
+        print(f"Error processing resume: {exc}")
+
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error while processing resume"
+        ) from exc
+        
 @router.post("/jd/analyze")
 async def analyze_job_description(payload: JDRequest):
     """
