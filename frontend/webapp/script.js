@@ -8,6 +8,7 @@ const AUTH_PROFILE_KEY_PREFIX = "resumepro_profile_";
 const AUTH_RESET_TOKENS_KEY = "resumepro_reset_tokens";
 const APP_STATE_KEY_PREFIX = "resumepro_app_state_";
 const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
+const BACKEND_BASE_URL = "https://resumepro-lp2a.onrender.com";
 const BACKEND_BASE_URL = (RESUMEPRO_CONFIG.backendBaseUrl || "http://127.0.0.1:8001").replace(/\/+$/, "");
 const RESUME_TEMPLATES = ["jonathan", "robert", "firstlast", "omar"];
 const SOFTWARE_SKILL_CATEGORIES = [
