@@ -61,8 +61,7 @@ app.include_router(ai_router, prefix="/ai")
 app.include_router(career_router, prefix="/career")
 app.include_router(user_router, prefix="/users")
 
-
-
+    
 # ✅ ROOT CHECK
 @app.get("/")
 def home():
