@@ -9,12 +9,6 @@ const AUTH_RESET_TOKENS_KEY = "resumepro_reset_tokens";
 const APP_STATE_KEY_PREFIX = "resumepro_app_state_";
 const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
 const BACKEND_BASE_URL = (RESUMEPRO_CONFIG.backendBaseUrl || "http://127.0.0.1:8001").replace(/\/+$/, "");
-const BACKEND_FALLBACK_URLS = (RESUMEPRO_CONFIG.backendFallbackUrls || [])
-  .map((url) => String(url || "").trim().replace(/\/+$/, ""))
-  .filter(Boolean);
-const BACKEND_CANDIDATES = [BACKEND_BASE_URL, ...BACKEND_FALLBACK_URLS].filter(
-  (url, index, arr) => arr.indexOf(url) === index
-);
 const RESUME_TEMPLATES = ["jonathan", "robert", "firstlast", "omar"];
 const SOFTWARE_SKILL_CATEGORIES = [
   {
@@ -504,119 +498,48 @@ function firstName(fullName) {
   return (fullName || "").trim().split(/\s+/)[0] || "";
 }
 
-async function postJson(url, payload) {
-  const candidateUrls = buildBackendCandidateUrls(url);
-  let lastError = "Network request failed";
-
-  for (const candidateUrl of candidateUrls) {
-    try {
-      const response = await fetch(candidateUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(`${candidateUrl} failed with status ${response.status}`);
-      }
-
-      return response.json();
-    } catch (error) {
-      lastError = error?.message || "Network request failed";
-    }
+/**
+ * Makes a JSON request (GET if no payload, POST if payload, or override method).
+ * @param {string} url - The endpoint URL
+ * @param {object|null} payload - Data to send (for POST/PUT), or null for GET
+ * @param {string} [method] - Optional explicit method (GET, POST, PUT, etc)
+ */
+async function postJson(url, payload = null, method = undefined) {
+  let fetchOptions = {
+    headers: { "Content-Type": "application/json" }
+  };
+  if (method) {
+    fetchOptions.method = method.toUpperCase();
+  } else if (payload) {
+    fetchOptions.method = "POST";
+  } else {
+    fetchOptions.method = "GET";
   }
-
-  throw new Error(lastError);
-}
-
-function buildBackendCandidateUrls(url) {
-  const normalizedInputUrl = String(url || "").trim();
-  const requestPath = normalizedInputUrl.startsWith(BACKEND_BASE_URL)
-    ? normalizedInputUrl.slice(BACKEND_BASE_URL.length)
-    : normalizedInputUrl;
-  const shouldUseCandidates = normalizedInputUrl.startsWith(BACKEND_BASE_URL);
-  return shouldUseCandidates
-    ? BACKEND_CANDIDATES.map((base) => `${base}${requestPath.startsWith("/") ? requestPath : `/${requestPath}`}`)
-    : [normalizedInputUrl];
+  if (payload && fetchOptions.method !== "GET") {
+    fetchOptions.body = JSON.stringify(payload);
+  }
+  const response = await fetch(url, fetchOptions);
+  if (!response.ok) {
+    throw new Error(`${url} failed with status ${response.status}`);
+  }
+  return response.json();
 }
 
 async function postJsonAllowStatus(url, payload) {
-  const candidateUrls = buildBackendCandidateUrls(url);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-  let lastError = "Network request failed";
-  for (const candidateUrl of candidateUrls) {
-    try {
-      const response = await fetch(candidateUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      return {
-        ok: response.ok,
-        status: response.status,
-        data,
-        networkError: false,
-        url: candidateUrl,
-      };
-    } catch (error) {
-      lastError = error?.message || "Network request failed";
-    }
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
   }
 
-  return {
-    ok: false,
-    status: 0,
-    data: {},
-    networkError: true,
-    error: lastError,
-  };
-}
-
-async function postFormAllowStatus(url, formData) {
-  const candidateUrls = buildBackendCandidateUrls(url);
-
-  let lastError = "Network request failed";
-  for (const candidateUrl of candidateUrls) {
-    try {
-      const response = await fetch(candidateUrl, {
-        method: "POST",
-        body: formData,
-      });
-
-      let data = {};
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      return {
-        ok: response.ok,
-        status: response.status,
-        data,
-        networkError: false,
-        url: candidateUrl,
-      };
-    } catch (error) {
-      lastError = error?.message || "Network request failed";
-    }
-  }
-
-  return {
-    ok: false,
-    status: 0,
-    data: {},
-    networkError: true,
-    error: lastError,
-  };
+  return { ok: response.ok, status: response.status, data };
 }
 
 async function upsertBackendUser(user) {
@@ -997,9 +920,10 @@ async function openSettingsSearchHistory() {
 
 function openAboutSettings() {
   closeSidebarSettingsMenu();
-  // Show About modal with project details
-  if (typeof showAboutModal === 'function') {
-    showAboutModal();
+  showPage("settings");
+  const aboutCard = document.getElementById("settings-about-card");
+  if (aboutCard) {
+    aboutCard.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
@@ -1649,15 +1573,6 @@ async function registerUser() {
     return;
   }
 
-  if (backendResp.status === 404) {
-    showToast("Auth service not found on backend URL. Using local mode.", 'warning');
-  }
-
-  if (backendResp.networkError) {
-    console.warn("Register API unreachable:", backendResp.error || "unknown error");
-    showToast("Backend is unreachable. Creating local account only.", 'warning');
-  }
-
   const users = getStoredUsers();
   if (users.some((user) => user.email === email)) {
     showToast("An account with this email already exists.", 'error');
@@ -1703,14 +1618,6 @@ async function loginUser() {
     return;
   }
 
-  if (backendResp.status === 404) {
-    console.warn("Login API route not found on backend host; trying local mode");
-  }
-
-  if (backendResp.networkError) {
-    console.warn("Login API unreachable:", backendResp.error || "unknown error");
-  }
-
   const users = getStoredUsers();
   const user = users.find((entry) => entry.email === email && entry.password === password);
   if (!user) {
@@ -1733,12 +1640,6 @@ function logoutUser() {
   clearSession();
   appState.profile = getDefaultProfile();
   setAppVisibility(false);
-  // Immediately show login/auth screen after logout
-  if (typeof showAuthScreen === 'function') {
-    showAuthScreen();
-  } else if (typeof showPage === 'function') {
-    showPage('auth');
-  }
 }
 
 function sendPasswordReset() {
@@ -6450,214 +6351,6 @@ function setUploadedFileName(name) {
   if (fallbackNameEl) fallbackNameEl.textContent = value;
 }
 
-function guessFileExtension(fileName) {
-  const value = String(fileName || "").toLowerCase();
-  const idx = value.lastIndexOf(".");
-  return idx >= 0 ? value.slice(idx + 1) : "";
-}
-
-function flattenSoftwareSkillKeywords() {
-  const all = [];
-  for (const category of SOFTWARE_SKILL_CATEGORIES || []) {
-    for (const skill of category.skills || []) {
-      const normalized = String(skill || "").trim().toLowerCase();
-      if (normalized) all.push(normalized);
-    }
-  }
-  return Array.from(new Set(all));
-}
-
-function extractSkillsFromTextLocal(text) {
-  const normalized = String(text || "").toLowerCase();
-  const found = [];
-  const keywords = flattenSoftwareSkillKeywords();
-
-  for (const keyword of keywords) {
-    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, "i");
-    if (pattern.test(normalized)) {
-      found.push(keyword);
-    }
-  }
-
-  return found.slice(0, 40);
-}
-
-function extractResumeDataLocal(text, fileName) {
-  const value = String(text || "");
-  const lines = value
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  const emailMatch = value.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
-  const phoneMatch = value.match(/(\+?\d[\d\-\s]{8,}\d)/);
-
-  let name = "";
-  for (const line of lines.slice(0, 8)) {
-    if (emailMatch && line.includes(emailMatch[0])) continue;
-    if (phoneMatch && line.includes(phoneMatch[0])) continue;
-    if (/^https?:\/\//i.test(line)) continue;
-    if (/\d/.test(line)) continue;
-    if (line.split(/\s+/).length >= 2 && line.split(/\s+/).length <= 4) {
-      name = line;
-      break;
-    }
-  }
-
-  if (!name) {
-    name = String(fileName || "").replace(/\.[^.]+$/, "") || "Candidate";
-  }
-
-  return {
-    name,
-    email: emailMatch ? emailMatch[0] : "",
-    phone: phoneMatch ? phoneMatch[0] : "",
-    education: [],
-    projects: [],
-    experience: [],
-    certifications: [],
-    summary: "",
-  };
-}
-
-function buildLocalAtsData(text, skills) {
-  const normalized = String(text || "").toLowerCase();
-  const hasSummary = /\b(summary|profile|objective)\b/.test(normalized);
-  const hasExperience = /\b(experience|work experience|internship)\b/.test(normalized);
-  const hasProjects = /\b(project|projects)\b/.test(normalized);
-  const hasEducation = /\b(education|university|college|school|btech|b\.tech|bachelor|master)\b/.test(normalized);
-
-  let score = 25;
-  if (skills.length >= 3) score += 15;
-  if (hasSummary) score += 10;
-  if (hasExperience) score += 15;
-  if (hasProjects) score += 10;
-  if (hasEducation) score += 10;
-  if (normalized.length > 600) score += 10;
-  score = Math.max(0, Math.min(95, score));
-
-  return {
-    score,
-    label: score >= 75 ? "Strong" : score >= 50 ? "Good" : "Needs work",
-    mode: "local-fallback",
-    resume_skills: skills,
-    detected_sections: {
-      summary: hasSummary,
-      education: hasEducation,
-      experience: hasExperience,
-      projects: hasProjects,
-      skills: skills.length > 0,
-    },
-    recommendations: [
-      "Server is unreachable; this is a local estimate.",
-      "Add measurable impact bullets in experience/projects.",
-      "Include keywords from your target role JD.",
-    ],
-  };
-}
-
-let pdfJsLoadPromise = null;
-function ensurePdfJsLoaded() {
-  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
-  if (pdfJsLoadPromise) return pdfJsLoadPromise;
-
-  pdfJsLoadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js";
-    script.onload = () => {
-      if (!window.pdfjsLib) {
-        reject(new Error("PDF parser unavailable"));
-        return;
-      }
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
-      resolve(window.pdfjsLib);
-    };
-    script.onerror = () => reject(new Error("Could not load PDF parser"));
-    document.head.appendChild(script);
-  });
-
-  return pdfJsLoadPromise;
-}
-
-let mammothLoadPromise = null;
-function ensureMammothLoaded() {
-  if (window.mammoth) return Promise.resolve(window.mammoth);
-  if (mammothLoadPromise) return mammothLoadPromise;
-
-  mammothLoadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js";
-    script.onload = () => {
-      if (!window.mammoth) {
-        reject(new Error("DOCX parser unavailable"));
-        return;
-      }
-      resolve(window.mammoth);
-    };
-    script.onerror = () => reject(new Error("Could not load DOCX parser"));
-    document.head.appendChild(script);
-  });
-
-  return mammothLoadPromise;
-}
-
-async function extractResumeTextLocally(file) {
-  const extension = guessFileExtension(file?.name || "");
-
-  if (["txt", "md", "csv", "json"].includes(extension)) {
-    return await file.text();
-  }
-
-  if (extension === "pdf") {
-    const pdfjsLib = await ensurePdfJsLoaded();
-    const bytes = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-    const chunks = [];
-    for (let i = 1; i <= pdf.numPages; i += 1) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = (textContent.items || []).map((item) => item.str || "").join(" ");
-      chunks.push(pageText);
-    }
-    return chunks.join("\n").trim();
-  }
-
-  if (["docx", "doc"].includes(extension)) {
-    const mammoth = await ensureMammothLoaded();
-    const buffer = await file.arrayBuffer();
-    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
-    return String(result?.value || "").trim();
-  }
-
-  return "";
-}
-
-async function analyzeResumeLocally(file) {
-  try {
-    const localText = await extractResumeTextLocally(file);
-    if (!localText) return null;
-
-    const skills = extractSkillsFromTextLocal(localText);
-    const resume_data = extractResumeDataLocal(localText, file?.name || "");
-    const ats_data = buildLocalAtsData(localText, skills);
-
-    return {
-      skills,
-      resume_data,
-      raw_text: localText,
-      ats_data,
-      job_data: { matches: [] },
-      career_data: { eligible: [], nearly_eligible: [], not_ready: [] },
-      opt_data: { optimized_skills: skills.slice(0, 10), added_keywords: [], suggestions: [] },
-    };
-  } catch (error) {
-    console.warn("Local resume analysis failed:", error?.message || error);
-    return null;
-  }
-}
-
 // MAIN upload handler
 async function uploadFile(file) {
   if (blockGuestWriteAccess("file upload")) return;
@@ -6681,16 +6374,28 @@ async function uploadFile(file) {
   formData.append("file", file);
 
   try {
-    const uploadResp = await postFormAllowStatus(`${BACKEND_BASE_URL}/resume/analyze`, formData);
-    if (!uploadResp.ok) {
-      if (uploadResp.networkError) {
-        throw new Error(`Upload failed: backend unreachable (${uploadResp.error || "network error"})`);
+    const res = await fetch(`${BACKEND_BASE_URL}/resume/analyze`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) {
+      let message = `Resume analysis failed with status ${res.status}`;
+      try {
+        const errorData = await res.json();
+        if (errorData && errorData.detail) {
+          message = errorData.detail;
+        }
+      } catch {
+        const errorText = await res.text();
+        if (errorText) {
+          message = errorText;
+        }
       }
-      const detail = uploadResp.data?.detail || "";
-      throw new Error(detail || `Resume analysis failed with status ${uploadResp.status}`);
+      throw new Error(message);
     }
 
-    const data = uploadResp.data || {};
+    const data = await res.json();
     const skills = data.skills || [];
 
     const jobData = await postJson(`${BACKEND_BASE_URL}/jobs/match`, skills);
@@ -6734,29 +6439,10 @@ async function uploadFile(file) {
 
   } catch (err) {
     console.error("Upload error:", err);
-
-    const localFallback = await analyzeResumeLocally(file);
-    if (localFallback) {
-      const uploadLabel = String(localFallback?.resume_data?.name || file?.name || "Uploaded Resume").trim();
-      const atsScore = Number(localFallback?.ats_data?.score ?? 0);
-
-      setUploadButtonLabel("Upload another");
-      setUploadedFileName(uploadLabel);
-      setUploadStatus(`Present uploaded resume: ${uploadLabel} • ATS Score (Local): ${Number.isFinite(atsScore) ? atsScore : 0}`);
-
-      Object.assign(appState, localFallback);
-      appState.base_ats_data = localFallback.ats_data || null;
-      appState.ats_data = localFallback.ats_data || null;
-      updateUI(localFallback);
-
-      showToast("Resume processed in local mode.", "success");
-      return;
-    }
-
     setUploadButtonLabel("Browse files");
     setUploadedFileName("None");
     setUploadStatus(`Present uploaded resume: none • Upload failed: ${err?.message || "Please try again."}`);
-    showToast(err?.message || "Backend not reachable", "error");
+    alert(err?.message || "Backend not reachable");
   } finally {
     isUploading = false;
     const input = document.getElementById("resumeInput");
@@ -7787,12 +7473,6 @@ window.logoutUser = function() {
   const session = getStoredSession();
   if (session && session.provider === 'google') {
     handleGoogleLogout();
-    // Immediately show login/auth screen after Google logout
-    if (typeof showAuthScreen === 'function') {
-      showAuthScreen();
-    } else if (typeof showPage === 'function') {
-      showPage('auth');
-    }
   } else {
     originalLogoutUser();
   }
