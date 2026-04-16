@@ -158,8 +158,16 @@ async def analyze_job_description(payload: JDRequest):
     return {"job_skills": skills}
 
 
-@router.post("/resume/ats-score")
-async def ats_score(payload: ATSScoreRequest):
-    resume_data = _prepare_resume_data(payload.resume_data or {})
-    ats_data = calculate_ats_score(payload.resume_text, resume_data, payload.job_description or "")
+
+from fastapi import Request
+
+@router.api_route("/resume/ats-score", methods=["GET", "POST"])
+async def ats_score(request: Request):
+    if request.method == "GET":
+        return {"message": "ATS score endpoint. Please use POST with resume data."}
+    payload = await request.json()
+    # If using Pydantic model validation, you can do:
+    # payload = ATSScoreRequest(**payload)
+    resume_data = _prepare_resume_data(payload.get("resume_data") or {})
+    ats_data = calculate_ats_score(payload.get("resume_text"), resume_data, payload.get("job_description") or "")
     return {"ats_data": ats_data}
