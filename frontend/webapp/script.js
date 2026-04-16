@@ -8,7 +8,7 @@ const AUTH_PROFILE_KEY_PREFIX = "resumepro_profile_";
 const AUTH_RESET_TOKENS_KEY = "resumepro_reset_tokens";
 const APP_STATE_KEY_PREFIX = "resumepro_app_state_";
 const RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {};
-const BACKEND_BASE_URL = (RESUMEPRO_CONFIG.backendBaseUrl || "https://resumepro-lp2a.onrender.com").replace(/\/+$/, "");
+const BACKEND_BASE_URL = "https://resumepro-lp2a.onrender.com";
 const RESUME_TEMPLATES = ["jonathan", "robert", "firstlast", "omar"];
 const SOFTWARE_SKILL_CATEGORIES = [
   {
@@ -4481,13 +4481,13 @@ async function runAtsScore(jobDescription = "", options = {}) {
   }
 
   try {
-    const response = await postJson(`${BACKEND_BASE_URL}/resume/ats-score`, {
+    const atsResp = await postJson(`${BACKEND_BASE_URL}/resume/ats-score`, {
       resume_text: appState.raw_text,
       resume_data: useResumeData ? appState.resume_data : {},
       job_description: jobDescription,
     });
 
-    const atsData = response.ats_data || null;
+    const atsData = atsResp.ats_data || null;
     appState.ats_data = atsData;
     renderAtsChecker(appState);
     renderAllPages(appState);
