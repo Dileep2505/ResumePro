@@ -118,7 +118,7 @@ async def analyze_job_description(payload: JDRequest):
     return {"job_skills": skills}
 
 
-@router.post("/ats-score")
+@router.post("/resume/ats-score")
 async def ats_score(payload: ATSScoreRequest):
     resume_data = _prepare_resume_data(payload.resume_data or {})
     ats_data = calculate_ats_score(payload.resume_text, resume_data, payload.job_description or "")
