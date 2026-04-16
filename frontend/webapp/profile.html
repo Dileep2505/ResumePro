@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ResumePro</title>
+  <link rel="stylesheet" href="style.css?v=20260414z">
+<link rel="icon" href="data:,">
+<script src="menu-sections.js?v=20260414a"></script>
+<!-- Google Sign-In SDK -->
+<script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="auth-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="auth-title">ResumePro</div>
+          <div class="auth-subtitle">Resume creation, ATS analysis, and job matching in one place.</div>
+        </div>
+      </div>
+      <div class="auth-points">
+        <div class="auth-point">Create a resume for fresher or professional profiles</div>
+        <div class="auth-point">Analyze ATS score and optimize for roles</div>
+        <div class="auth-point">Track jobs matched to your resume</div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-login-tab" type="button" onclick="showAuthForm('login')">Login</button>
+        <button class="auth-tab" id="auth-register-tab" type="button" onclick="showAuthForm('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="login-form">
+        <div class="field-label">Email</div>
+        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="login-password" type="password" placeholder="Enter your password" />
+        <a href="#" class="auth-link" onclick="showAuthForm('forgot'); return false;">Forgot password?</a>
+        <button class="btn btn-primary auth-action" type="button" onclick="loginUser()">Login</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Login Button -->
+        <div id="google-login-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="register-form">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" id="register-name" type="text" placeholder="Your name" />
+        <div class="field-label">Email</div>
+        <input class="field-input" id="register-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="register-password" type="password" placeholder="Create a password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="register-confirm-password" type="password" placeholder="Confirm password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="registerUser()">Create Account</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Register Button -->
+        <div id="google-register-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="auth-form" id="forgot-form">
+        <h3 class="auth-form-title">Reset Password</h3>
+        <p class="auth-form-subtitle">Enter your email to receive a password reset code</p>
+        <div class="field-label">Email</div>
+        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" />
+        <button class="btn btn-primary auth-action" type="button" onclick="sendPasswordReset()">Send Reset Code</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div class="auth-form" id="reset-form">
+        <h3 class="auth-form-title">Create New Password</h3>
+        <div class="field-label">Reset Code</div>
+        <input class="field-input" id="reset-code" type="text" placeholder="Enter the code sent to your email" />
+        <div class="field-label">New Password</div>
+        <input class="field-input" id="reset-password" type="password" placeholder="Enter new password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="app">
+  <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
+ 
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <div class="sidebar">
+    
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="logo-name">ResumePro</div>
+      <div class="logo-sub">Career Intelligence Platform</div>
+    </div>
+    <button class="sidebar-menu-toggle" type="button" onclick="toggleSidebarMenu()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+ 
+    <resumepro-sidebar-menu></resumepro-sidebar-menu>
+ 
+    <div class="sidebar-user" id="sidebar-user-card">
+      <div class="sidebar-user-main" onclick="showPage('profile')">
+        <div class="profile-avatar"></div>
+        <div class="sidebar-user-meta">
+          <div id="sidebar-user-name" class="sidebar-user-name">&nbsp;</div>
+        </div>
+      </div>
+      <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ══════════════ MAIN ══════════════ -->
+  <div class="main">
+<div id="page-profile" class="page active fade-in">
+      <div class="page-header flex-between">
+        <div>
+          <div class="page-title">Profile</div>
+          <div class="page-sub">Maintain the required details used across the website and resume builder</div>
+        </div>
+        <button class="btn btn-primary" type="button" onclick="saveProfileDetails()">Save Profile</button>
+      </div>
+
+      <div class="grid4 section-gap">
+        <div class="profile-metric">
+          <div class="profile-metric-label">Skills</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Experience</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Education</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Projects</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+      </div>
+
+      <!-- Profile Sidebar Layout -->
+      <div class="profile-container">
+        <!-- Left Sidebar with Section Names -->
+        <div class="profile-sidebar">
+          <div class="profile-section-nav">
+            <div class="profile-nav-item active" onclick="switchProfileSection('identity')">Identity</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('contact')">Contact</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('summary')">Summary</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('skills')">Required Skills</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('experience')">Required Experience</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('education')">Education & Projects</div>
+          </div>
+        </div>
+        <div class="profile-content">
+          <!-- Identity Section -->
+          <div id="profile-section-identity" class="profile-section active">
+            <div class="profile-section-title">Identity</div>
+            <div class="builder-field"><div class="field-label">Full Name</div><input class="field-input" id="profile-name" type="text" /></div>
+            <div class="builder-field"><div class="field-label">Role Title</div><input class="field-input" id="profile-role" type="text" placeholder="Software Developer" /></div>
+            <div class="builder-field"><div class="field-label">Location</div><input class="field-input" id="profile-location" type="text" placeholder="City, Country" /></div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
+              <input id="builder-project-title" class="field-input" type="text" placeholder="Project title" />
+              <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
+              <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
+            </div>
+            <textarea id="builder-project-bullets" class="field-input" style="min-height:120px;margin-top:8px;" placeholder="One bullet per line&#10;Built feature...&#10;Improved performance..."></textarea>
+            <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
+          </div>
+
+          <!-- Contact Section -->
+          <div id="profile-section-contact" class="profile-section">
+            <div class="profile-section-title">Contact</div>
+            <div class="builder-field"><div class="field-label">Email</div><input class="field-input" id="profile-email" type="email" /></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input class="field-input" id="profile-phone" type="text" /></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input class="field-input" id="profile-linkedin" type="text" /></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input class="field-input" id="profile-github" type="text" /></div>
+          </div>
+
+          <!-- Summary Section -->
+          <div id="profile-section-summary" class="profile-section">
+            <div class="profile-section-title">Professional Summary</div>
+            <textarea class="field-input" id="profile-summary" style="min-height:240px;"></textarea>
+          </div>
+
+          <!-- Skills Section -->
+          <div id="profile-section-skills" class="profile-section">
+            <div class="profile-section-title">Software Skills</div>
+            <div class="profile-skill-help">Pick the software skills you know. Selected skills are saved into your profile.</div>
+            <div class="builder-field" style="margin-bottom: 12px;">
+              <div class="field-label">Type To Search Skills</div>
+              <input class="field-input profile-skill-search" id="profile-skill-search" type="text" placeholder="Type React, Python, AWS, SQL..." />
+            </div>
+            <div id="profile-skills-catalog" class="profile-skills-catalog"></div>
+            <div class="builder-field" style="margin-top: 18px;">
+              <div class="field-label">Selected / Custom Skills</div>
+              <textarea class="field-input" id="profile-skills" style="min-height:240px;" placeholder="Selected skills appear here, one per line"></textarea>
+            </div>
+          </div>
+
+          <!-- Experience Section -->
+          <div id="profile-section-experience" class="profile-section">
+            <div class="profile-section-title">Required Experience</div>
+            <textarea class="field-input" id="profile-experience" style="min-height:240px;" placeholder="One experience entry per line"></textarea>
+          </div>
+
+          <!-- Education & Projects Section -->
+          <div id="profile-section-education" class="profile-section">
+            <div class="profile-section-title">Education & Projects</div>
+            
+            <!-- Education Subsection -->
+            <div style="margin-bottom: 40px;">
+              <div style="font-size: 15px; font-weight: 600; color: var(--text1); margin-bottom: 20px;">Add Education Details</div>
+
+              <div class="education-form" style="background: rgba(99, 102, 241, 0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+                <div class="builder-field">
+                  <div class="field-label">Education Type</div>
+                  <select class="field-input" id="profile-edu-level">
+                    <option value="10th">10th Education</option>
+                    <option value="inter">Inter Education (12th)</option>
+                    <option value="upper">Graduation / Degree</option>
+                  </select>
+                </div>
+                <div class="builder-field"><div class="field-label">School / College / University</div><input class="field-input" id="profile-edu-institution" type="text" placeholder="School or institution name" /></div>
+                <div class="builder-field"><div class="field-label">Degree / Stream</div><input class="field-input" id="profile-edu-degree" type="text" placeholder="For upper education: B.Tech, M.Sc, etc." /></div>
+                <div class="builder-field"><div class="field-label">Start Course</div><input class="field-input" id="profile-edu-start-course" type="text" placeholder="2018 or June 2018" /></div>
+                <div class="builder-field"><div class="field-label">End Course</div><input class="field-input" id="profile-edu-end-course" type="text" placeholder="2021 or May 2021" /></div>
+                <div class="builder-field"><div class="field-label">CGPA / Percentage</div><input class="field-input" id="profile-edu-score" type="text" placeholder="90% or 3.8 / 4.0" /></div>
+                <button class="btn btn-secondary" type="button" onclick="addProfileEducation()" style="width: 100%; margin-top: 12px;">Add Education</button>
+              </div>
+
+              <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--text1); margin-bottom: 16px;">All Your Educations</div>
+                <div id="profile-education-all-list"></div>
+              </div>
+            </div>
+
+            <!-- Projects Subsection -->
+            <div>
+              <div style="font-size: 15px; font-weight: 600; color: var(--text1); margin-bottom: 16px;">Projects</div>
+              
+              <div class="project-form" style="background: rgba(99, 102, 241, 0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+                <div class="builder-field"><div class="field-label">Project Name</div><input class="field-input" id="profile-project-name" type="text" placeholder="E-Commerce Platform" /></div>
+                <div class="builder-field"><div class="field-label">Description</div><textarea class="field-input" id="profile-project-description" style="min-height: 80px;" placeholder="Brief description of the project"></textarea></div>
+                <div class="builder-field"><div class="field-label">Technologies Used</div><input class="field-input" id="profile-project-tech" type="text" placeholder="React, Node.js, MongoDB (comma-separated)" /></div>
+                <div class="builder-field"><div class="field-label">Duration</div><input class="field-input" id="profile-project-duration" type="text" placeholder="3 months" /></div>
+                <div class="builder-field"><div class="field-label">Link/GitHub</div><input class="field-input" id="profile-project-link" type="text" placeholder="https://github.com/..." /></div>
+                <button class="btn btn-secondary" type="button" onclick="addProfileProject()" style="width: 100%; margin-top: 12px;">Add Project</button>
+              </div>
+
+              <div id="profile-projects-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main -->
+
+    
+</div><!-- /app -->
+ 
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="config.js?v=20260409h"></script>
+<script src="script.js?v=20260414am"></script>
+
+</body>
+</html>

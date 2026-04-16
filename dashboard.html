@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ResumePro</title>
+  <link rel="stylesheet" href="style.css?v=20260414z">
+<link rel="icon" href="data:,">
+<script src="menu-sections.js?v=20260414a"></script>
+<!-- Google Sign-In SDK -->
+<script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="auth-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="auth-title">ResumePro</div>
+          <div class="auth-subtitle">Resume creation, ATS analysis, and job matching in one place.</div>
+        </div>
+      </div>
+      <div class="auth-points">
+        <div class="auth-point">Create a resume for fresher or professional profiles</div>
+        <div class="auth-point">Analyze ATS score and optimize for roles</div>
+        <div class="auth-point">Track jobs matched to your resume</div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-login-tab" type="button" onclick="showAuthForm('login')">Login</button>
+        <button class="auth-tab" id="auth-register-tab" type="button" onclick="showAuthForm('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="login-form">
+        <div class="field-label">Email</div>
+        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="login-password" type="password" placeholder="Enter your password" />
+        <a href="#" class="auth-link" onclick="showAuthForm('forgot'); return false;">Forgot password?</a>
+        <button class="btn btn-primary auth-action" type="button" onclick="loginUser()">Login</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Login Button -->
+        <div id="google-login-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="register-form">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" id="register-name" type="text" placeholder="Your name" />
+        <div class="field-label">Email</div>
+        <input class="field-input" id="register-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="register-password" type="password" placeholder="Create a password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="register-confirm-password" type="password" placeholder="Confirm password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="registerUser()">Create Account</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Register Button -->
+        <div id="google-register-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="auth-form" id="forgot-form">
+        <h3 class="auth-form-title">Reset Password</h3>
+        <p class="auth-form-subtitle">Enter your email to receive a password reset code</p>
+        <div class="field-label">Email</div>
+        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" />
+        <button class="btn btn-primary auth-action" type="button" onclick="sendPasswordReset()">Send Reset Code</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div class="auth-form" id="reset-form">
+        <h3 class="auth-form-title">Create New Password</h3>
+        <div class="field-label">Reset Code</div>
+        <input class="field-input" id="reset-code" type="text" placeholder="Enter the code sent to your email" />
+        <div class="field-label">New Password</div>
+        <input class="field-input" id="reset-password" type="password" placeholder="Enter new password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="app">
+  <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
+ 
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <div class="sidebar">
+    
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="logo-name">ResumePro</div>
+      <div class="logo-sub">Career Intelligence Platform</div>
+    </div>
+    <button class="sidebar-menu-toggle" type="button" onclick="toggleSidebarMenu()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+ 
+    <resumepro-sidebar-menu></resumepro-sidebar-menu>
+ 
+    <div class="sidebar-user" id="sidebar-user-card">
+      <div class="sidebar-user-main" onclick="showPage('profile')">
+        <div class="profile-avatar"></div>
+        <div class="sidebar-user-meta">
+          <div id="sidebar-user-name" class="sidebar-user-name">&nbsp;</div>
+        </div>
+      </div>
+      <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ══════════════ MAIN ══════════════ -->
+  <div class="main">
+<div id="page-dashboard" class="page active fade-in">
+      <div class="page-header flex-between">
+        <div>
+          <div class="page-title">Welcome back</div>
+          <div class="page-sub">Here's your resume analysis and career insights</div>
+        </div>
+      </div>
+ 
+      <!-- Stat Cards -->
+      <div class="grid4 section-gap">
+        <div class="stat-card">
+          <div class="stat-label">ATS Score</div>
+          <div class="stat-value" style="color:#6c63ff;"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Skills Matched</div>
+          <div class="stat-value"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Eligible Roles</div>
+          <div class="stat-value" style="color:var(--accent3);"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Skill Gaps</div>
+          <div class="stat-value" style="color:var(--accent2);"></div>
+          <div class="stat-change down"></div>
+        </div>
+      </div>
+ 
+      <!-- ATS Breakdown + Skill Gaps -->
+      <div class="grid2 section-gap">
+        <div class="card">
+          <div class="card-title">ATS Score Breakdown</div>
+          <div style="display:flex; align-items:center; gap:2rem;">
+            <div class="score-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#6c63ff" stroke-width="10"
+                  stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round"/>
+              </svg>
+              <div class="score-text">
+                <div class="score-num"></div>
+                <div class="score-lbl"></div>
+              </div>
+            </div>
+            <div style="flex:1;">
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Keywords</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent);"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Structure</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);animation-delay:0.1s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Completeness</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent4);animation-delay:0.2s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Formatting</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:#a78bfa;animation-delay:0.3s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-title">Top Skill Gaps</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-red"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-red"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-orange"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-orange"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-purple"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Recommended Jobs -->
+      <div class="card section-gap">
+        <div class="flex-between mb-md">
+          <div class="card-title" style="margin-bottom:0;">Recommended Jobs</div>
+          <button class="btn btn-ghost" onclick="showPage('explorer')" style="font-size:12px;padding:6px 12px;">View all</button>
+        </div>
+        <div class="grid3">
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent3);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent3);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent4);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main -->
+
+    
+</div><!-- /app -->
+ 
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="config.js?v=20260409h"></script>
+<script src="script.js?v=20260414am"></script>
+
+</body>
+</html>

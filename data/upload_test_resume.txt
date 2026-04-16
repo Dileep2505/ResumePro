@@ -1,0 +1,1 @@
+Nani P\nEmail: nani@example.com\nPhone: +91 9999999999\nSkills: Python, FastAPI, JavaScript

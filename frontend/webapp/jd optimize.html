@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ResumePro</title>
+  <link rel="stylesheet" href="style.css?v=20260414z">
+<link rel="icon" href="data:,">
+<script src="menu-sections.js?v=20260414a"></script>
+<!-- Google Sign-In SDK -->
+<script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="auth-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="auth-title">ResumePro</div>
+          <div class="auth-subtitle">Resume creation, ATS analysis, and job matching in one place.</div>
+        </div>
+      </div>
+      <div class="auth-points">
+        <div class="auth-point">Create a resume for fresher or professional profiles</div>
+        <div class="auth-point">Analyze ATS score and optimize for roles</div>
+        <div class="auth-point">Track jobs matched to your resume</div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-login-tab" type="button" onclick="showAuthForm('login')">Login</button>
+        <button class="auth-tab" id="auth-register-tab" type="button" onclick="showAuthForm('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="login-form">
+        <div class="field-label">Email</div>
+        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="login-password" type="password" placeholder="Enter your password" />
+        <a href="#" class="auth-link" onclick="showAuthForm('forgot'); return false;">Forgot password?</a>
+        <button class="btn btn-primary auth-action" type="button" onclick="loginUser()">Login</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Login Button -->
+        <div id="google-login-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="register-form">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" id="register-name" type="text" placeholder="Your name" />
+        <div class="field-label">Email</div>
+        <input class="field-input" id="register-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="register-password" type="password" placeholder="Create a password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="register-confirm-password" type="password" placeholder="Confirm password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="registerUser()">Create Account</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Register Button -->
+        <div id="google-register-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="auth-form" id="forgot-form">
+        <h3 class="auth-form-title">Reset Password</h3>
+        <p class="auth-form-subtitle">Enter your email to receive a password reset code</p>
+        <div class="field-label">Email</div>
+        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" />
+        <button class="btn btn-primary auth-action" type="button" onclick="sendPasswordReset()">Send Reset Code</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div class="auth-form" id="reset-form">
+        <h3 class="auth-form-title">Create New Password</h3>
+        <div class="field-label">Reset Code</div>
+        <input class="field-input" id="reset-code" type="text" placeholder="Enter the code sent to your email" />
+        <div class="field-label">New Password</div>
+        <input class="field-input" id="reset-password" type="password" placeholder="Enter new password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="app">
+  <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
+ 
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <div class="sidebar">
+    
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="logo-name">ResumePro</div>
+      <div class="logo-sub">Career Intelligence Platform</div>
+    </div>
+    <button class="sidebar-menu-toggle" type="button" onclick="toggleSidebarMenu()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+ 
+    <resumepro-sidebar-menu></resumepro-sidebar-menu>
+ 
+    <div class="sidebar-user" id="sidebar-user-card">
+      <div class="sidebar-user-main" onclick="showPage('profile')">
+        <div class="profile-avatar"></div>
+        <div class="sidebar-user-meta">
+          <div id="sidebar-user-name" class="sidebar-user-name">&nbsp;</div>
+        </div>
+      </div>
+      <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ══════════════ MAIN ══════════════ -->
+  <div class="main">
+<div id="page-builder" class="page active fade-in">
+      <div class="page-header">
+        <div class="page-title">JD Optimize</div>
+        <div class="page-sub">Optimize your resume for job descriptions</div>
+      </div>
+ 
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('optimize')">Optimize for JD</div>
+        <div class="tab" onclick="switchTab('preview')">Preview &amp; Export</div>
+      </div>
+ 
+      <!-- ── Build Tab ── -->
+      <div id="tab-build">
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Section 1: New Create Resume</div>
+            <div id="resume-required-hint" class="builder-structured-hint"></div>
+
+            <div class="builder-field">
+              <div class="field-label">Profile Type</div>
+              <select id="builder-profile-type" class="field-input">
+                <option value="fresher">Fresher</option>
+                <option value="professional">Professional</option>
+              </select>
+            </div>
+
+            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" type="text" placeholder="Enter full name"></div>
+            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" type="email" placeholder="Enter email"></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" type="text" placeholder="Enter phone"></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" type="text" placeholder="https://linkedin.com/in/username"></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" type="text" placeholder="https://github.com/username"></div>
+            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" type="text" placeholder="https://yourportfolio.com"></div>
+            <div class="builder-field"><div class="field-label">Professional Summary</div><textarea id="builder-summary" class="field-input" style="min-height:120px;" placeholder="Write a concise role-focused summary"></textarea></div>
+            <div class="builder-field"><div class="field-label">Relevant Coursework (Optional)</div><textarea id="builder-coursework" class="field-input" style="min-height:90px;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems"></textarea></div>
+
+            <div class="builder-field">
+              <div class="field-label">Skills</div>
+              <div style="display:flex;gap:8px;">
+                <input id="new-skill" class="field-input" type="text" placeholder="Add one skill">
+                <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
+              </div>
+              <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Section 2: JD AI Optimizer (ATS 95+ Target)</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Paste a job description and let AI convert your resume into a structured JD-aligned version.</div>
+            <div class="builder-field"><div class="field-label">Job Description</div><textarea id="builder-jd-text" class="field-input" style="min-height:220px;" placeholder="Paste complete JD here"></textarea></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary" type="button" onclick="optimizeBuilderResume95()">AI Convert For JD (Target 95+)</button>
+              <button class="btn btn-ghost" type="button" onclick="previewCurrentResume()">Preview Structured Resume</button>
+            </div>
+            <div id="builder-jd-result" style="margin-top:12px;background:rgba(99,102,241,0.07);border:1px solid var(--border2);border-radius:10px;padding:12px;font-size:13px;color:var(--text2);">Awaiting JD input.</div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Experience</div>
+            <div class="builder-field"><div class="field-label">Format: Role | Company | Duration | Achievement</div><textarea id="builder-experience-input" class="field-input" style="min-height:150px;" placeholder="Example: Backend Developer Intern | ABC Tech | Jan 2025 - Mar 2025 | Improved API response time by 30%"></textarea></div>
+            <button class="btn btn-primary" type="button" onclick="addExperience()">Add Experience</button>
+            <div id="builder-experience-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Education</div>
+            <div class="builder-field"><div class="field-label">Format: Degree | Institution | Year | Score</div><textarea id="builder-education-input" class="field-input" style="min-height:150px;" placeholder="Example: B.Tech CSE | JNTU | 2024 | 8.5 CGPA"></textarea></div>
+            <button class="btn btn-primary" type="button" onclick="addEducation()">Add Education</button>
+            <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card section-gap">
+          <div class="card-title">Projects</div>
+          <div class="builder-field"><div class="field-label">Use title/date line + bullet points</div><textarea id="builder-projects-input" class="field-input" style="min-height:160px;" placeholder="Project Name | React, Node.js | 2025&#10;- Built feature...&#10;- Improved performance..."></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
+            <button class="btn btn-ghost" type="button" onclick="autoFormatProjects()">Auto Format Projects</button>
+          </div>
+          <div id="builder-projects-list" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Certifications (Optional)</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-cert-name" class="field-input" type="text" placeholder="Certification" />
+              <input id="builder-cert-provider" class="field-input" type="text" placeholder="Details / Provider" />
+              <input id="builder-cert-year" class="field-input" type="text" placeholder="Date (e.g., Nov 2024)" />
+            </div>
+            <textarea id="builder-certifications-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addCertification()">Add Certification</button>
+            <div id="builder-certifications-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Achievements / Extra Activities</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-achievement-title" class="field-input" type="text" placeholder="Achievement" />
+              <input id="builder-achievement-context" class="field-input" type="text" placeholder="Context" />
+              <input id="builder-achievement-year" class="field-input" type="text" placeholder="Year" />
+            </div>
+            <textarea id="builder-achievements-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addAchievement()">Add Achievement</button>
+            <div id="builder-achievements-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" type="button" onclick="clearBuilderData()">Clear All</button>
+          <button class="btn btn-ghost" type="button" onclick="saveResumeDraft()">Save Draft</button>
+          <button class="btn btn-primary" type="button" onclick="previewCurrentResume()">Preview Resume</button>
+        </div>
+      </div>
+
+      <!-- ── Optimize Tab ── -->
+      <div id="tab-optimize" style="display:none;">
+        <div class="grid2">
+          <div class="card">
+            <div class="card-title">Paste Job Description</div>
+            <textarea class="field-input" id="jd-text" style="min-height:280px;font-size:12px;line-height:1.6;"></textarea>
+            <div style="margin-top:12px;">
+              <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="analyzeJD()">Analyze &amp; Optimize Resume</button>
+            </div>
+          </div>
+          <div class="card" id="jd-result">
+            <div class="card-title">JD Match Analysis</div>
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+              <div class="score-ring" style="width:90px;height:90px;">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                  <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                  <circle cx="45" cy="45" r="38" fill="none" stroke="#f7971e" stroke-width="8" stroke-dasharray="239" stroke-dashoffset="239" stroke-linecap="round"/>
+                </svg>
+                <div class="score-text">
+                    <div class="score-num" style="font-size:20px;"></div>
+                    <div class="score-lbl"></div>
+                </div>
+              </div>
+              <div>
+                  <div style="font-size:13px;color:var(--text2);margin-bottom:8px;"></div>
+                  <span class="tag tag-orange"></span>
+              </div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">MISSING KEYWORDS TO ADD</div>
+                <div class="chip-list"></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">AI ENHANCEMENTS</div>
+              <div style="font-size:12px;color:var(--text2);background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.15);border-radius:8px;padding:10px;line-height:1.6;"></div>
+            <button class="btn btn-primary" style="margin-top:12px;width:100%;justify-content:center;">Apply AI Enhancements</button>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ── Preview Tab ── -->
+      <div id="tab-preview" style="display:none;">
+        <div id="resume-template-selector" class="resume-template-selector"></div>
+        <div class="resume-preview-shell">
+          <div class="resume-preview">
+            <div class="resume-a4">
+              <header class="resume-head">
+                <div>
+                  <h1>Your Name</h1>
+                  <p>Professional Resume</p>
+                </div>
+              </header>
+              <section class="resume-block">
+                <h3>Summary</h3>
+                <p>Build or upload your resume, then click Preview Resume to render the structured A4 format.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div style="display:none;gap:10px;justify-content:center;margin-top:1.5rem;">
+          <button class="btn btn-primary" onclick="downloadResumePDF()">Download PDF</button>
+          <button class="btn btn-ghost" onclick="downloadResumeDOCX()">Download DOCX</button>
+          <button class="btn btn-ghost" onclick="copyResumeLink()">Copy Link</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main -->
+
+    
+</div><!-- /app -->
+ 
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="config.js?v=20260409h"></script>
+<script src="script.js?v=20260414am"></script>
+
+</body>
+</html>

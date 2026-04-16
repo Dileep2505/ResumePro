@@ -1,0 +1,102 @@
+# ResumePro
+
+ResumePro is an AI-assisted resume platform that helps users analyze resumes, match jobs, explore career options, and optimize content against job descriptions.
+
+## Highlights
+
+- Resume analysis and structured parsing
+- Job matching with skill-gap insights
+- Career exploration and market trend views
+- JD-based resume optimization suggestions
+- Google OAuth support for web login
+
+## Tech Stack
+
+- Backend: FastAPI + SQLAlchemy
+- Frontend: Static HTML/CSS/JavaScript web app
+- Data: CSV datasets + SQLite (local), supports `DATABASE_URL` in cloud
+- Deployment: GitHub Pages (frontend) + Render (backend)
+
+## Repository Layout
+
+```
+backend/                 # FastAPI app, routes, services, DB models
+frontend/webapp/         # Production frontend pages and assets
+support/                 # Local run scripts and utility files
+tools/dev/               # Development helper scripts
+data/                    # Source datasets
+.runtime/                # Runtime logs and pid state (generated)
+```
+
+## Quick Start (Local)
+
+### 1) Create and activate virtual environment
+
+```powershell
+python -m venv venv
+./venv/Scripts/Activate.ps1
+```
+
+### 2) Install dependencies
+
+```powershell
+pip install -r support/requirements.txt
+```
+
+### 3) Start app
+
+```powershell
+./support/start-dev.ps1
+```
+
+The startup script:
+
+1. Clears stale listeners on ports 3000 and 8001
+2. Starts frontend at `http://127.0.0.1:3000`
+3. Starts backend at `http://127.0.0.1:8001`
+4. Saves process IDs to `.runtime/dev-pids.json`
+
+Open:
+
+- `http://127.0.0.1:3000/resume%20analyzer.html`
+- Fallback: `http://127.0.0.1:8001/resume%20analyzer.html`
+
+### 4) Monitor and stop
+
+```powershell
+./support/status-dev.ps1
+./support/stop-dev.ps1
+```
+
+## Deployment
+
+### Frontend (GitHub Pages)
+
+- Custom domain: `resumepro2.me`
+- Root `CNAME` is tracked in this repository
+
+### Backend (Render)
+
+- `render.yaml` is included for blueprint deployment
+- Backend supports `DATABASE_URL` for cloud databases
+
+See deployment details in `DEPLOY_ANYWHERE.md`.
+
+## Runtime Logs
+
+When running locally, logs are written to:
+
+1. `.runtime/frontend.out.log`
+2. `.runtime/frontend.err.log`
+3. `.runtime/backend.out.log`
+4. `.runtime/backend.err.log`
+
+If a service fails to start, check the corresponding `.err.log` first.
+
+## Troubleshooting
+
+- If port 3000 is unavailable, use `http://127.0.0.1:8001/resume%20analyzer.html`
+- If Google sign-in fails with `origin_mismatch`, verify OAuth allowed origins
+- If custom domain HTTPS is disabled, confirm GitHub Pages domain ownership and DNS records
+
+

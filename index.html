@@ -1,0 +1,1097 @@
+</body>
+<!-- About Modal -->
+<div id="about-modal" class="modal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);align-items:center;justify-content:center;">
+  <div style="background:#fff;color:#222;max-width:420px;width:90vw;padding:32px 24px 24px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;">
+    <button onclick="closeAboutModal()" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:#888;">&times;</button>
+    <div style="font-size:22px;font-weight:700;margin-bottom:8px;">About ResumePro</div>
+    <div style="font-size:14px;line-height:1.7;margin-bottom:8px;">
+      <b>ResumePro</b> is an AI-assisted resume platform that helps you analyze resumes, improve ATS scores, and find job matches based on your skills.<br><br>
+      <b>Features:</b><br>
+      • Resume analysis and structured parsing<br>
+      • Job matching with skill-gap insights<br>
+      • Career exploration and market trend views<br>
+      • JD-based resume optimization suggestions<br>
+      • Google OAuth support for secure login<br><br>
+      <b>Tech Stack:</b> FastAPI, SQLAlchemy, HTML/CSS/JS, SQLite/CSV<br>
+      <b>Deployment:</b> GitHub Pages (frontend), Render (backend)<br>
+      <b>Source & Docs:</b> See project README for details.
+    </div>
+  </div>
+</div>
+
+<script>
+function showAboutModal() {
+  document.getElementById('about-modal').style.display = 'flex';
+}
+function closeAboutModal() {
+  document.getElementById('about-modal').style.display = 'none';
+}
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ResumePro</title>
+  <link rel="stylesheet" href="style.css?v=20260414z">
+<link rel="icon" href="data:,">
+<script src="menu-sections.js?v=20260414a"></script>
+<!-- Google Sign-In SDK -->
+<script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="auth-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="auth-title">ResumePro</div>
+          <div class="auth-subtitle">Resume creation, ATS analysis, and job matching in one place.</div>
+        </div>
+      </div>
+      <div class="auth-points">
+        <div class="auth-point">Create a resume for fresher or professional profiles</div>
+        <div class="auth-point">Analyze ATS score and optimize for roles</div>
+        <div class="auth-point">Track jobs matched to your resume</div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-login-tab" type="button" onclick="showAuthForm('login')">Login</button>
+        <button class="auth-tab" id="auth-register-tab" type="button" onclick="showAuthForm('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form active" id="login-form">
+        <div class="field-label">Email</div>
+        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="login-password" type="password" placeholder="Enter your password" />
+        <a href="#" class="auth-link" onclick="showAuthForm('forgot'); return false;">Forgot password?</a>
+        <button class="btn btn-primary auth-action" type="button" onclick="loginUser()">Login</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Login Button -->
+        <div id="google-login-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form" id="register-form">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" id="register-name" type="text" placeholder="Your name" />
+        <div class="field-label">Email</div>
+        <input class="field-input" id="register-email" type="email" placeholder="you@example.com" />
+        <div class="field-label">Password</div>
+        <input class="field-input" id="register-password" type="password" placeholder="Create a password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="register-confirm-password" type="password" placeholder="Confirm password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="registerUser()">Create Account</button>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
+          <div style="flex:1;height:1px;background:var(--surface2);"></div>
+        </div>
+
+        <!-- Google Register Button -->
+        <div id="google-register-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div class="auth-form" id="forgot-form">
+        <h3 class="auth-form-title">Reset Password</h3>
+        <p class="auth-form-subtitle">Enter your email to receive a password reset code</p>
+        <div class="field-label">Email</div>
+        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" />
+        <button class="btn btn-primary auth-action" type="button" onclick="sendPasswordReset()">Send Reset Code</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+
+      <!-- Reset Password Form -->
+      <div class="auth-form" id="reset-form">
+        <h3 class="auth-form-title">Create New Password</h3>
+        <div class="field-label">Reset Code</div>
+        <input class="field-input" id="reset-code" type="text" placeholder="Enter the code sent to your email" />
+        <div class="field-label">New Password</div>
+        <input class="field-input" id="reset-password" type="password" placeholder="Enter new password" />
+        <div class="field-label">Confirm Password</div>
+        <input class="field-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" />
+        <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
+        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="app">
+  <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
+ 
+  <!-- ══════════════ SIDEBAR ══════════════ -->
+  <div class="sidebar">
+    
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="logo-name">ResumePro</div>
+      <div class="logo-sub">Career Intelligence Platform</div>
+    </div>
+    <button class="sidebar-menu-toggle" type="button" onclick="toggleSidebarMenu()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+ 
+    <resumepro-sidebar-menu></resumepro-sidebar-menu>
+ 
+    <div class="sidebar-user" id="sidebar-user-card">
+      <div class="sidebar-user-main" onclick="showPage('profile')">
+        <div class="profile-avatar"></div>
+        <div class="sidebar-user-meta">
+          <div id="sidebar-user-name" class="sidebar-user-name">&nbsp;</div>
+        </div>
+      </div>
+      <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- ══════════════ MAIN ══════════════ -->
+  <div class="main">
+<div id="page-dashboard" class="page active fade-in">
+      <div class="page-header flex-between">
+        <div>
+          <div class="page-title">Welcome back</div>
+          <div class="page-sub">Here's your resume analysis and career insights</div>
+        </div>
+      </div>
+ 
+      <!-- Stat Cards -->
+      <div class="grid4 section-gap">
+        <div class="stat-card">
+          <div class="stat-label">ATS Score</div>
+          <div class="stat-value" style="color:#6c63ff;"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Skills Matched</div>
+          <div class="stat-value"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Eligible Roles</div>
+          <div class="stat-value" style="color:var(--accent3);"></div>
+          <div class="stat-change up"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Skill Gaps</div>
+          <div class="stat-value" style="color:var(--accent2);"></div>
+          <div class="stat-change down"></div>
+        </div>
+      </div>
+ 
+      <!-- ATS Breakdown + Skill Gaps -->
+      <div class="grid2 section-gap">
+        <div class="card">
+          <div class="card-title">ATS Score Breakdown</div>
+          <div style="display:flex; align-items:center; gap:2rem;">
+            <div class="score-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#6c63ff" stroke-width="10"
+                  stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round"/>
+              </svg>
+              <div class="score-text">
+                <div class="score-num"></div>
+                <div class="score-lbl"></div>
+              </div>
+            </div>
+            <div style="flex:1;">
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Keywords</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent);"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Structure</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);animation-delay:0.1s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Completeness</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent4);animation-delay:0.2s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name" style="width:100px;font-size:12px;">Formatting</div>
+                <div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:#a78bfa;animation-delay:0.3s;"></div></div>
+                <div class="skill-pct"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-title">Top Skill Gaps</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-red"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-red"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-orange"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-orange"></span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+              <div style="font-size:13px;"></div><span class="tag tag-purple"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Recommended Jobs -->
+      <div class="card section-gap">
+        <div class="flex-between mb-md">
+          <div class="card-title" style="margin-bottom:0;">Recommended Jobs</div>
+          <button class="btn btn-ghost" onclick="showPage('explorer')" style="font-size:12px;padding:6px 12px;">View all</button>
+        </div>
+        <div class="grid3">
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent3);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent3);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+          <div class="job-card">
+            <div class="job-card-header">
+              <div><div class="job-role"></div><div class="job-company"></div></div>
+              <div class="job-match" style="color:var(--accent4);"></div>
+            </div>
+            <div class="job-tags"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="page-profile" class="page fade-in">
+      <div class="page-header flex-between">
+        <div>
+          <div class="page-title">Profile</div>
+          <div class="page-sub">Maintain the required details used across the website and resume builder</div>
+        </div>
+        <button class="btn btn-primary" type="button" onclick="saveProfileDetails()">Save Profile</button>
+      </div>
+
+      <div class="grid4 section-gap">
+        <div class="profile-metric">
+          <div class="profile-metric-label">Skills</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Experience</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Education</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+        <div class="profile-metric">
+          <div class="profile-metric-label">Projects</div>
+          <div class="profile-metric-value">0</div>
+        </div>
+      </div>
+
+      <!-- Profile Sidebar Layout -->
+      <div class="profile-container">
+        <!-- Left Sidebar with Section Names -->
+        <div class="profile-sidebar">
+          <div class="profile-section-nav">
+            <div class="profile-nav-item active" onclick="switchProfileSection('identity')">Identity</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('contact')">Contact</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('summary')">Summary</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('skills')">Required Skills</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('experience')">Required Experience</div>
+            <div class="profile-nav-item" onclick="switchProfileSection('education')">Education & Projects</div>
+          </div>
+        </div>
+        <div class="profile-content">
+          <!-- Identity Section -->
+          <div id="profile-section-identity" class="profile-section active">
+            <div class="profile-section-title">Identity</div>
+            <div class="builder-field"><div class="field-label">Full Name</div><input class="field-input" id="profile-name" type="text" /></div>
+            <div class="builder-field"><div class="field-label">Role Title</div><input class="field-input" id="profile-role" type="text" placeholder="Software Developer" /></div>
+            <div class="builder-field"><div class="field-label">Location</div><input class="field-input" id="profile-location" type="text" placeholder="City, Country" /></div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
+              <input id="builder-project-title" class="field-input" type="text" placeholder="Project title" />
+              <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
+              <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
+            </div>
+            <textarea id="builder-project-bullets" class="field-input" style="min-height:120px;margin-top:8px;" placeholder="One bullet per line&#10;Built feature...&#10;Improved performance..."></textarea>
+            <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
+          </div>
+
+          <!-- Contact Section -->
+          <div id="profile-section-contact" class="profile-section">
+            <div class="profile-section-title">Contact</div>
+            <div class="builder-field"><div class="field-label">Email</div><input class="field-input" id="profile-email" type="email" /></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input class="field-input" id="profile-phone" type="text" /></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input class="field-input" id="profile-linkedin" type="text" /></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input class="field-input" id="profile-github" type="text" /></div>
+          </div>
+
+          <!-- Summary Section -->
+          <div id="profile-section-summary" class="profile-section">
+            <div class="profile-section-title">Professional Summary</div>
+            <textarea class="field-input" id="profile-summary" style="min-height:240px;"></textarea>
+          </div>
+
+          <!-- Skills Section -->
+          <div id="profile-section-skills" class="profile-section">
+            <div class="profile-section-title">Software Skills</div>
+            <div class="profile-skill-help">Pick the software skills you know. Selected skills are saved into your profile.</div>
+            <div class="builder-field" style="margin-bottom: 12px;">
+              <div class="field-label">Type To Search Skills</div>
+              <input class="field-input profile-skill-search" id="profile-skill-search" type="text" placeholder="Type React, Python, AWS, SQL..." />
+            </div>
+            <div id="profile-skills-catalog" class="profile-skills-catalog"></div>
+            <div class="builder-field" style="margin-top: 18px;">
+              <div class="field-label">Selected / Custom Skills</div>
+              <textarea class="field-input" id="profile-skills" style="min-height:240px;" placeholder="Selected skills appear here, one per line"></textarea>
+            </div>
+          </div>
+
+          <!-- Experience Section -->
+          <div id="profile-section-experience" class="profile-section">
+            <div class="profile-section-title">Required Experience</div>
+            <textarea class="field-input" id="profile-experience" style="min-height:240px;" placeholder="One experience entry per line"></textarea>
+          </div>
+
+          <!-- Education & Projects Section -->
+          <div id="profile-section-education" class="profile-section">
+            <div class="profile-section-title">Education & Projects</div>
+            
+            <!-- Education Subsection -->
+            <div style="margin-bottom: 40px;">
+              <div style="font-size: 15px; font-weight: 600; color: var(--text1); margin-bottom: 20px;">Add Education Details</div>
+
+              <div class="education-form" style="background: rgba(99, 102, 241, 0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 24px;">
+                <div class="builder-field">
+                  <div class="field-label">Education Type</div>
+                  <select class="field-input" id="profile-edu-level">
+                    <option value="10th">10th Education</option>
+                    <option value="inter">Inter Education (12th)</option>
+                    <option value="upper">Graduation / Degree</option>
+                  </select>
+                </div>
+                <div class="builder-field"><div class="field-label">School / College / University</div><input class="field-input" id="profile-edu-institution" type="text" placeholder="School or institution name" /></div>
+                <div class="builder-field"><div class="field-label">Degree / Stream</div><input class="field-input" id="profile-edu-degree" type="text" placeholder="For upper education: B.Tech, M.Sc, etc." /></div>
+                <div class="builder-field"><div class="field-label">Start Course</div><input class="field-input" id="profile-edu-start-course" type="text" placeholder="2018 or June 2018" /></div>
+                <div class="builder-field"><div class="field-label">End Course</div><input class="field-input" id="profile-edu-end-course" type="text" placeholder="2021 or May 2021" /></div>
+                <div class="builder-field"><div class="field-label">CGPA / Percentage</div><input class="field-input" id="profile-edu-score" type="text" placeholder="90% or 3.8 / 4.0" /></div>
+                <button class="btn btn-secondary" type="button" onclick="addProfileEducation()" style="width: 100%; margin-top: 12px;">Add Education</button>
+              </div>
+
+              <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--text1); margin-bottom: 16px;">All Your Educations</div>
+                <div id="profile-education-all-list"></div>
+              </div>
+            </div>
+
+            <!-- Projects Subsection -->
+            <div>
+              <div style="font-size: 15px; font-weight: 600; color: var(--text1); margin-bottom: 16px;">Projects</div>
+              
+              <div class="project-form" style="background: rgba(99, 102, 241, 0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+                <div class="builder-field"><div class="field-label">Project Name</div><input class="field-input" id="profile-project-name" type="text" placeholder="E-Commerce Platform" /></div>
+                <div class="builder-field"><div class="field-label">Description</div><textarea class="field-input" id="profile-project-description" style="min-height: 80px;" placeholder="Brief description of the project"></textarea></div>
+                <div class="builder-field"><div class="field-label">Technologies Used</div><input class="field-input" id="profile-project-tech" type="text" placeholder="React, Node.js, MongoDB (comma-separated)" /></div>
+                <div class="builder-field"><div class="field-label">Duration</div><input class="field-input" id="profile-project-duration" type="text" placeholder="3 months" /></div>
+                <div class="builder-field"><div class="field-label">Link/GitHub</div><input class="field-input" id="profile-project-link" type="text" placeholder="https://github.com/..." /></div>
+                <button class="btn btn-secondary" type="button" onclick="addProfileProject()" style="width: 100%; margin-top: 12px;">Add Project</button>
+              </div>
+
+              <div id="profile-projects-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="page-analyzer" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">ATS Checker</div>
+        <div class="page-sub">Upload your resume to get an ATS score and detailed feedback</div>
+      </div>
+ 
+      <div class="grid2 section-gap">
+        <div>
+          <!-- Upload Zone -->
+          <div class="upload-zone mb-md" onclick="triggerUpload(event)" id="dropZone">
+            <div class="upload-zone-content">
+              <div class="upload-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div class="upload-title">Drop your resume here</div>
+              <div class="upload-sub">PDF or DOCX · Max 5MB · ATS analysis after upload</div>
+              <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                  <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" hidden>
+                <button id="upload-another-btn" class="btn btn-primary" type="button" onclick="triggerUpload(event)">Browse files</button>
+              </div>
+              <div id="uploaded-file-row" class="uploaded-file-row">
+                <span class="uploaded-file-label">Uploaded file:</span>
+                <span id="uploaded-file-name" class="uploaded-file-name">None</span>
+              </div>
+              <div id="upload-status" class="upload-status">Present uploaded resume: none</div>
+            </div>
+          </div>
+
+          
+ 
+          <!-- Extracted Info -->
+          <div class="card">
+            <div class="card-title">Extracted Information</div>
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;">
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">NAME</div>
+                <div id="resume-name">Not extracted yet</div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">EMAIL</div>
+                <div id="resume-email" style="color:var(--text2);">Upload a resume to extract email</div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">PHONE</div>
+                <div id="resume-phone" style="color:var(--text2);">Upload a resume to extract phone</div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">SUMMARY</div>
+                <div id="resume-summary" style="color:var(--text2);">Upload a resume to extract summary</div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">EDUCATION</div>
+                <div id="resume-education" style="color:var(--text2);">Upload a resume to extract education details</div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">SKILLS DETECTED</div>
+                <div class="chip-list" id="resume-skills">
+                  <span class="chip">No skills extracted yet</span>
+                </div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">PROJECTS</div>
+                <div id="resume-projects" style="color:var(--text2);"></div>
+              </div>
+              <div>
+                <div style="color:var(--text3);font-size:11px;margin-bottom:4px;">EXPERIENCE</div>
+                <div id="resume-experience" style="color:var(--text2);">Upload a resume to extract experience</div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+          <div class="card">
+            <div class="card-title">ATS Score Checker</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Paste a job description to score this resume against common ATS filters.</div>
+            <textarea class="field-input" id="ats-jd" style="min-height:220px;font-size:12px;line-height:1.6;" placeholder="Paste a job description here"></textarea>
+            <div style="margin-top:12px;display:flex;gap:8px;">
+              <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="checkAtsScore()">Check ATS Score</button>
+              <button class="btn btn-ghost" onclick="resetAtsScore()">Reset</button>
+            </div>
+          </div>
+
+          <div class="card" id="ats-result-card">
+            <div class="card-title">ATS Score Result</div>
+            <div id="ats-empty-state" style="color:var(--text3);font-size:13px;">Upload a resume to calculate ATS score.</div>
+            <div id="ats-result" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="page-explorer" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">Resume Analyzer</div>
+        <div class="page-sub">Jobs categorized by your current skill match</div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="flex-between mb-md">
+          <div class="card-title" style="margin-bottom:0;">Resume Upload</div>
+          <button class="btn btn-primary" type="button" onclick="document.getElementById('career-resume-input')?.click()">Upload Resume</button>
+        </div>
+        <input type="file" id="career-resume-input" accept=".pdf,.doc,.docx" hidden onchange="handleFileSelect(event)">
+        <div style="display:grid;gap:10px;">
+          <div style="font-size:13px;color:var(--text2);">Upload your latest resume here to refresh ATS score and career role matches.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <span class="tag tag-purple">Current resume</span>
+            <span id="career-uploaded-file-name" style="font-size:13px;color:var(--text1);">None</span>
+          </div>
+          <div id="career-upload-status" class="upload-status">Present uploaded resume: none</div>
+        </div>
+      </div>
+ 
+      <div class="grid4 section-gap" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card" style="border-color:rgba(108,99,255,0.3);">
+          <div class="stat-label">ATS Score</div>
+          <div class="stat-value" style="color:#6c63ff;"></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">From latest uploaded resume</div>
+        </div>
+        <div class="stat-card" style="border-color:rgba(67,233,123,0.3);">
+          <div class="stat-label">Eligible Roles</div>
+          <div class="stat-value" style="color:var(--accent3);"></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Match ≥ 75%</div>
+        </div>
+        <div class="stat-card" style="border-color:rgba(247,151,30,0.3);">
+          <div class="stat-label">Nearly Eligible</div>
+          <div class="stat-value" style="color:var(--accent4);"></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Match 50–74%</div>
+        </div>
+        <div class="stat-card" style="border-color:rgba(255,101,132,0.3);">
+          <div class="stat-label">Skill Gap</div>
+          <div class="stat-value" style="color:var(--accent2);"></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Match &lt; 50%</div>
+        </div>
+      </div>
+ 
+      <div class="career-tier tier-eligible section-gap">
+        <div class="tier-header">
+          <div style="width:10px;height:10px;background:var(--accent3);border-radius:50%;flex-shrink:0;"></div>
+          <div class="tier-title" style="color:var(--accent3);">Eligible Now</div>
+          <div class="tier-count"></div>
+        </div>
+        <div class="tier-roles"></div>
+      </div>
+ 
+      <div class="career-tier tier-near section-gap">
+        <div class="tier-header">
+          <div style="width:10px;height:10px;background:var(--accent4);border-radius:50%;flex-shrink:0;"></div>
+          <div class="tier-title" style="color:var(--accent4);">Nearly Eligible</div>
+          <div class="tier-count"></div>
+        </div>
+        <div class="tier-roles"></div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+      </div>
+ 
+      <div class="career-tier tier-gap section-gap">
+        <div class="tier-header">
+          <div style="width:10px;height:10px;background:var(--accent2);border-radius:50%;flex-shrink:0;"></div>
+          <div class="tier-title" style="color:var(--accent2);">Needs Preparation</div>
+          <div class="tier-count"></div>
+        </div>
+        <div class="tier-roles"></div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+      </div>
+ 
+    </div>
+
+<div id="page-market" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">Market Trends</div>
+        <div class="page-sub">Insights on in-demand skills and roles in your field</div>
+      </div>
+ 
+      <div class="grid2 section-gap">
+        <div class="card">
+          <div class="card-title">Top Demanded Skills</div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+          <div class="market-row"><div><div class="market-skill"></div><div class="market-demand"></div></div><div style="display:flex;align-items:center;gap:8px;"><div class="mini-chart"></div><div class="market-trend"></div></div></div>
+        </div>
+ 
+        <div class="card">
+          <div class="card-title">Your Skills vs. Market Demand</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">&nbsp;</div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);animation-delay:.05s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);animation-delay:.1s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent2);animation-delay:.15s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent2);animation-delay:.2s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent4);animation-delay:.25s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent4);animation-delay:.3s;"></div></div><div class="skill-pct"></div></div>
+          <div class="skill-row"><div class="skill-name"></div><div class="skill-bar-bg"><div class="skill-bar-fill animated-bar" style="width:0%;background:var(--accent3);animation-delay:.35s;"></div></div><div class="skill-pct"></div></div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <div class="card-title">Salary Trends by Role (Fresher · India)</div>
+        <div class="grid4">
+          <div style="text-align:center;padding:1rem;background:var(--surface2);border-radius:10px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;"></div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--accent);"></div>
+            <div style="font-size:11px;color:var(--accent3);margin-top:4px;"></div>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--surface2);border-radius:10px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;"></div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--accent);"></div>
+            <div style="font-size:11px;color:var(--accent3);margin-top:4px;"></div>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--surface2);border-radius:10px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;"></div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--accent);"></div>
+            <div style="font-size:11px;color:var(--accent3);margin-top:4px;"></div>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--surface2);border-radius:10px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;"></div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--accent);"></div>
+            <div style="font-size:11px;color:var(--accent3);margin-top:4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="page-create" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">Create Resume</div>
+        <div class="page-sub">Build your professional resume from scratch with structured fields</div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('build')">Build from Scratch</div>
+        <div class="tab" onclick="switchTab('preview')">Preview &amp; Export</div>
+      </div>
+
+      <!-- ── Build Tab ── -->
+      <div id="tab-build-shared">
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Header &amp; Contact</div>
+            <div id="resume-required-hint" class="builder-structured-hint"></div>
+
+            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" type="text" placeholder="Enter full name"></div>
+            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" type="email" placeholder="Enter email"></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" type="text" placeholder="Enter phone"></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" type="text" placeholder="https://linkedin.com/in/username"></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" type="text" placeholder="https://github.com/username"></div>
+            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" type="text" placeholder="https://yourportfolio.com"></div>
+          </div>
+
+          <div class="card">
+            <div class="builder-field">
+              <div class="field-label">Professional Summary</div>
+              <textarea id="builder-summary" class="field-input" style="min-height:220px;" placeholder="Write a comprehensive professional summary tailored to the role you are targeting"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Education</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-education-degree" class="field-input" type="text" placeholder="Degree" />
+              <input id="builder-education-institution" class="field-input" type="text" placeholder="Institution" />
+              <input id="builder-education-year" class="field-input" type="text" placeholder="Year" />
+              <input id="builder-education-score" class="field-input" type="text" placeholder="Score" />
+            </div>
+            <textarea id="builder-education-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addEducation()">Add Education</button>
+            <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Relevant Coursework</div>
+            <div class="builder-field"><textarea id="builder-coursework" class="field-input" style="min-height:120px;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems, Artificial Intelligence, etc."></textarea></div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Experience</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-experience-role" class="field-input" type="text" placeholder="Role" />
+              <input id="builder-experience-company" class="field-input" type="text" placeholder="Company" />
+              <input id="builder-experience-duration" class="field-input" type="text" placeholder="Duration" />
+              <input id="builder-experience-impact" class="field-input" type="text" placeholder="Achievement / Impact" />
+            </div>
+            <textarea id="builder-experience-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addExperience()">Add Experience</button>
+            <div id="builder-experience-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"><div style="background:var(--surface2);border-radius:10px;padding:10px 12px;color:var(--text3);font-size:13px;">Add your work experience here</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Projects</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
+              <input id="builder-project-title" class="field-input" type="text" placeholder="Project title" />
+              <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
+              <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
+            </div>
+            <textarea id="builder-project-bullets" class="field-input" style="min-height:100px;margin-top:8px;" placeholder="One bullet per line&#10;- Built feature...&#10;- Improved performance..."></textarea>
+            <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
+            <div id="builder-projects-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Technical Skills</div>
+            <div class="builder-field">
+              <div class="field-label">Add Skills</div>
+              <div style="display:flex;gap:8px;">
+                <input id="new-skill" class="field-input" type="text" placeholder="Add one skill">
+                <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
+              </div>
+              <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Certifications (Optional)</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-cert-name" class="field-input" type="text" placeholder="Certification" />
+              <input id="builder-cert-provider" class="field-input" type="text" placeholder="Details / Provider" />
+              <input id="builder-cert-year" class="field-input" type="text" placeholder="Date (e.g., Nov 2024)" />
+            </div>
+            <textarea id="builder-certifications-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addCertification()">Add Certification</button>
+            <div id="builder-certifications-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card section-gap">
+          <div class="card-title">Leadership / Extracurricular</div>
+          <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+            <input id="builder-achievement-title" class="field-input" type="text" placeholder="Achievement" />
+            <input id="builder-achievement-context" class="field-input" type="text" placeholder="Context" />
+            <input id="builder-achievement-year" class="field-input" type="text" placeholder="Year" />
+          </div>
+          <textarea id="builder-achievements-input" class="field-input" style="display:none;"></textarea>
+          <button class="btn btn-primary" type="button" onclick="addAchievement()">Add Achievement</button>
+          <div id="builder-achievements-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" type="button" onclick="clearBuilderData()">Clear All</button>
+          <button class="btn btn-ghost" type="button" onclick="saveResumeDraft()">Save Draft</button>
+          <button class="btn btn-primary" type="button" onclick="previewCurrentResume()">Preview Resume</button>
+        </div>
+      </div>
+
+      <!-- ── Preview Tab ── -->
+      <div id="tab-preview-shared" style="display:none;">
+        <div id="resume-template-selector-shared" class="resume-template-selector"></div>
+        <div class="resume-preview-shell">
+          <div class="resume-preview">
+            <div class="resume-a4">
+              <header class="resume-head">
+                <div>
+                  <h1>Your Name</h1>
+                </div>
+              </header>
+              <section class="resume-block">
+                <h3>Summary</h3>
+                <p>Build your resume using the form above, then click Preview to see the formatted result.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:1.5rem;">
+          <button class="btn btn-primary" onclick="downloadResumePDF()">Download PDF</button>
+          <button class="btn btn-ghost" onclick="downloadResumeDOCX()">Download DOCX</button>
+          <button class="btn btn-ghost" onclick="copyResumeLink()">Copy Link</button>
+        </div>
+      </div>
+    </div>
+
+<div id="page-builder" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">JD Optimize</div>
+        <div class="page-sub">Optimize your resume for job descriptions</div>
+      </div>
+ 
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('optimize')">Optimize for JD</div>
+        <div class="tab" onclick="switchTab('preview')">Preview &amp; Export</div>
+      </div>
+ 
+      <!-- ── Build Tab ── -->
+      <div id="tab-build">
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Section 1: New Create Resume</div>
+            <div id="resume-required-hint" class="builder-structured-hint"></div>
+
+            <div class="builder-field">
+              <div class="field-label">Profile Type</div>
+              <select id="builder-profile-type" class="field-input">
+                <option value="fresher">Fresher</option>
+                <option value="professional">Professional</option>
+              </select>
+            </div>
+
+            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" type="text" placeholder="Enter full name"></div>
+            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" type="email" placeholder="Enter email"></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" type="text" placeholder="Enter phone"></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" type="text" placeholder="https://linkedin.com/in/username"></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" type="text" placeholder="https://github.com/username"></div>
+            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" type="text" placeholder="https://yourportfolio.com"></div>
+            <div class="builder-field"><div class="field-label">Professional Summary</div><textarea id="builder-summary" class="field-input" style="min-height:120px;" placeholder="Write a concise role-focused summary"></textarea></div>
+            <div class="builder-field"><div class="field-label">Relevant Coursework (Optional)</div><textarea id="builder-coursework" class="field-input" style="min-height:90px;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems"></textarea></div>
+
+            <div class="builder-field">
+              <div class="field-label">Skills</div>
+              <div style="display:flex;gap:8px;">
+                <input id="new-skill" class="field-input" type="text" placeholder="Add one skill">
+                <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
+              </div>
+              <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Section 2: JD AI Optimizer (ATS 95+ Target)</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Paste a job description and let AI convert your resume into a structured JD-aligned version.</div>
+            <div class="builder-field"><div class="field-label">Job Description</div><textarea id="builder-jd-text" class="field-input" style="min-height:220px;" placeholder="Paste complete JD here"></textarea></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary" type="button" onclick="optimizeBuilderResume95()">AI Convert For JD (Target 95+)</button>
+              <button class="btn btn-ghost" type="button" onclick="previewCurrentResume()">Preview Structured Resume</button>
+            </div>
+            <div id="builder-jd-result" style="margin-top:12px;background:rgba(99,102,241,0.07);border:1px solid var(--border2);border-radius:10px;padding:12px;font-size:13px;color:var(--text2);">Awaiting JD input.</div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Experience</div>
+            <div class="builder-field"><div class="field-label">Format: Role | Company | Duration | Achievement</div><textarea id="builder-experience-input" class="field-input" style="min-height:150px;" placeholder="Example: Backend Developer Intern | ABC Tech | Jan 2025 - Mar 2025 | Improved API response time by 30%"></textarea></div>
+            <button class="btn btn-primary" type="button" onclick="addExperience()">Add Experience</button>
+            <div id="builder-experience-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Education</div>
+            <div class="builder-field"><div class="field-label">Format: Degree | Institution | Year | Score</div><textarea id="builder-education-input" class="field-input" style="min-height:150px;" placeholder="Example: B.Tech CSE | JNTU | 2024 | 8.5 CGPA"></textarea></div>
+            <button class="btn btn-primary" type="button" onclick="addEducation()">Add Education</button>
+            <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card section-gap">
+          <div class="card-title">Projects</div>
+          <div class="builder-field"><div class="field-label">Use title/date line + bullet points</div><textarea id="builder-projects-input" class="field-input" style="min-height:160px;" placeholder="Project Name | React, Node.js | 2025&#10;- Built feature...&#10;- Improved performance..."></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
+            <button class="btn btn-ghost" type="button" onclick="autoFormatProjects()">Auto Format Projects</button>
+          </div>
+          <div id="builder-projects-list" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Certifications (Optional)</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-cert-name" class="field-input" type="text" placeholder="Certification" />
+              <input id="builder-cert-provider" class="field-input" type="text" placeholder="Details / Provider" />
+              <input id="builder-cert-year" class="field-input" type="text" placeholder="Date (e.g., Nov 2024)" />
+            </div>
+            <textarea id="builder-certifications-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addCertification()">Add Certification</button>
+            <div id="builder-certifications-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Achievements / Extra Activities</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-achievement-title" class="field-input" type="text" placeholder="Achievement" />
+              <input id="builder-achievement-context" class="field-input" type="text" placeholder="Context" />
+              <input id="builder-achievement-year" class="field-input" type="text" placeholder="Year" />
+            </div>
+            <textarea id="builder-achievements-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addAchievement()">Add Achievement</button>
+            <div id="builder-achievements-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" type="button" onclick="clearBuilderData()">Clear All</button>
+          <button class="btn btn-ghost" type="button" onclick="saveResumeDraft()">Save Draft</button>
+          <button class="btn btn-primary" type="button" onclick="previewCurrentResume()">Preview Resume</button>
+        </div>
+      </div>
+
+      <!-- ── Optimize Tab ── -->
+      <div id="tab-optimize" style="display:none;">
+        <div class="grid2">
+          <div class="card">
+            <div class="card-title">Paste Job Description</div>
+            <textarea class="field-input" id="jd-text" style="min-height:280px;font-size:12px;line-height:1.6;"></textarea>
+            <div style="margin-top:12px;">
+              <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="analyzeJD()">Analyze &amp; Optimize Resume</button>
+            </div>
+          </div>
+          <div class="card" id="jd-result">
+            <div class="card-title">JD Match Analysis</div>
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+              <div class="score-ring" style="width:90px;height:90px;">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                  <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                  <circle cx="45" cy="45" r="38" fill="none" stroke="#f7971e" stroke-width="8" stroke-dasharray="239" stroke-dashoffset="239" stroke-linecap="round"/>
+                </svg>
+                <div class="score-text">
+                    <div class="score-num" style="font-size:20px;"></div>
+                    <div class="score-lbl"></div>
+                </div>
+              </div>
+              <div>
+                  <div style="font-size:13px;color:var(--text2);margin-bottom:8px;"></div>
+                  <span class="tag tag-orange"></span>
+              </div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">MISSING KEYWORDS TO ADD</div>
+                <div class="chip-list"></div>
+            </div>
+            <div class="divider"></div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">AI ENHANCEMENTS</div>
+              <div style="font-size:12px;color:var(--text2);background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.15);border-radius:8px;padding:10px;line-height:1.6;"></div>
+            <button class="btn btn-primary" style="margin-top:12px;width:100%;justify-content:center;">Apply AI Enhancements</button>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ── Preview Tab ── -->
+      <div id="tab-preview" style="display:none;">
+        <div id="resume-template-selector" class="resume-template-selector"></div>
+        <div class="resume-preview-shell">
+          <div class="resume-preview">
+            <div class="resume-a4">
+              <header class="resume-head">
+                <div>
+                  <h1>Your Name</h1>
+                  <p>Professional Resume</p>
+                </div>
+              </header>
+              <section class="resume-block">
+                <h3>Summary</h3>
+                <p>Build or upload your resume, then click Preview Resume to render the structured A4 format.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div style="display:none;gap:10px;justify-content:center;margin-top:1.5rem;">
+          <button class="btn btn-primary" onclick="downloadResumePDF()">Download PDF</button>
+          <button class="btn btn-ghost" onclick="downloadResumeDOCX()">Download DOCX</button>
+          <button class="btn btn-ghost" onclick="copyResumeLink()">Copy Link</button>
+        </div>
+      </div>
+    </div>
+
+<div id="page-learning" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">Jobs for You</div>
+        <div class="page-sub">&nbsp;</div>
+      </div>
+ 
+      <div id="jobs-for-you-shell"></div>
+    </div>
+
+<div id="page-settings" class="page fade-in">
+      <div class="page-header">
+        <div class="page-title">Settings</div>
+        <div class="page-sub">Manage account options, support actions, and recent history in one place</div>
+      </div>
+
+      <div class="grid2 section-gap">
+        <div class="card">
+          <div class="card-title">Account</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+            <div><span style="color:var(--text3);">Name:</span> <span id="settings-user-name">-</span></div>
+            <div><span style="color:var(--text3);">Email:</span> <span id="settings-user-email">-</span></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+            <button class="btn btn-primary" type="button" onclick="openSettingsSearchHistory()">Refresh Search History</button>
+          </div>
+        </div>
+
+        <div id="settings-about-card" class="card">
+          <div class="card-title">Support &amp; About</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+            <b>ResumePro</b> is an AI-assisted resume platform that helps you analyze resumes, improve ATS scores, and find job matches based on your skills.<br><br>
+            <b>Features:</b><br>
+            • Resume analysis and structured parsing<br>
+            • Job matching with skill-gap insights<br>
+            • Career exploration and market trend views<br>
+            • JD-based resume optimization suggestions<br>
+            • Google OAuth support for secure login<br><br>
+            <b>Tech Stack:</b> FastAPI, SQLAlchemy, HTML/CSS/JS, SQLite/CSV<br>
+            <b>Deployment:</b> GitHub Pages (frontend), Render (backend)<br>
+            <b>Source & Docs:</b> See project README for details.
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+            <button class="btn btn-ghost" type="button" onclick="openAboutSettings()">About</button>
+            <button class="btn btn-ghost" type="button" onclick="openHelpFeedback()">Help &amp; Feedback</button>
+            <button class="btn btn-primary" type="button" onclick="logoutFromSettings()">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="card-title">Recent Searches</div>
+        <div id="settings-history-list" class="sidebar-settings-history-list" style="max-height:280px;">
+          <div class="history-empty">No search history yet.</div>
+        </div>
+      </div>
+    </div>
+</div><!-- /main -->
+
+    
+</div><!-- /app -->
+ 
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="config.js?v=20260409h"></script>
+<script src="script.js?v=20260414am"></script>
+
+</body>
+</html>
