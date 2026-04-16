@@ -1,7 +1,14 @@
 (function () {
+
   const host = (window.location.hostname || "").toLowerCase();
   const isLocalHost = host === "localhost" || host === "127.0.0.1";
-  const defaultBackendBaseUrl = isLocalHost ? "http://127.0.0.1:8001" : "https://api.resumepro2.me";
+  const isProd = host === "resumepro2.me" || host === "www.resumepro2.me";
+  // Use same domain for backend in production
+  const defaultBackendBaseUrl = isLocalHost
+    ? "http://127.0.0.1:8001"
+    : isProd
+      ? "https://resumepro2.me"
+      : "https://api.resumepro2.me";
 
   window.RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {
   googleClientId: "109234105240-edbepiq6deenufb2k33r90k6teqs1ie5.apps.googleusercontent.com",
