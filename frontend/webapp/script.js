@@ -7196,7 +7196,10 @@ function initializeGoogleSignIn() {
 
   // Wait for Google SDK to load
   if (typeof google === 'undefined' || !google || !google.accounts) {
-    console.warn('⏳ Google SDK not ready yet; waiting for script load event');
+    // Suppress or only log in debug mode
+    if (window.RESUMEPRO_CONFIG?.debugGoogleSDK) {
+      console.warn('⏳ Google SDK not ready yet; waiting for script load event');
+    }
     googleInitStarted = false;
 
     if (!googleSdkLoadListenerAttached) {
