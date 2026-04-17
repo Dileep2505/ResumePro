@@ -7381,6 +7381,7 @@ async function handleGoogleLogin(response) {
           email: existingUser.email,
           provider: 'google'
         });
+        // Always upsert to backend
         await upsertBackendUser({
           name: existingUser.name || googleUser.name,
           email: existingUser.email,
@@ -7403,7 +7404,6 @@ async function handleGoogleLogin(response) {
         picture: googleUser.picture,
         email_verified: googleUser.email_verified
       };
-      
       users.push(newUser);
       saveStoredUsers(users);
       saveSession({
@@ -7411,6 +7411,7 @@ async function handleGoogleLogin(response) {
         email: newUser.email,
         provider: 'google'
       });
+      // Always upsert to backend
       await upsertBackendUser({
         name: newUser.name,
         email: newUser.email,
