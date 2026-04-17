@@ -559,12 +559,9 @@ async function logUserSearch(queryText, searchType, resultCount) {
   if (!session?.email) return;
 
   try {
-    await postJson(`${BACKEND_BASE_URL}/users/searches`, {
-      email: session.email,
-      query_text: queryText,
-      search_type: searchType,
-      result_count: resultCount,
-    });
+    if (session.email) {
+      await fetch(`${BACKEND_BASE_URL}/users/${encodeURIComponent(session.email)}/searches?limit=1`);
+    }
     updateSidebarSearchHistory();
   } catch (error) {
     console.warn("Could not log search to backend:", error.message || error);
@@ -684,12 +681,10 @@ async function loadSearchHistory() {
 
   try {
     const searches = await fetchUserSearchHistory(20);
-
-    if (searches.length === 0) {
-      showHistoryEmpty("No search history yet");
+    if (!searches || searches.length === 0) {
+      dropdown.innerHTML = "";
       return;
     }
-
     // Render history items (limit to 20)
     const items = searches.slice(0, 20).map((search) => {
       const date = new Date(search.created_at);
@@ -699,7 +694,6 @@ async function loadSearchHistory() {
       const resultLine = isResumeUpload
         ? `ATS Score: ${search.result_count ?? 0}`
         : `${formatSearchType(type)} • ${search.result_count} results`;
-      
       return `
         <div class="history-item" onclick="replaySearch('${search.query_text.replace(/'/g, "\\'")}', '${search.search_type}')">
           <div class="history-item-left">
@@ -710,11 +704,10 @@ async function loadSearchHistory() {
         </div>
       `;
     }).join("");
-
     dropdown.innerHTML = items;
   } catch (error) {
     console.warn("Error loading search history:", error);
-    showHistoryEmpty("Error loading history");
+    dropdown.innerHTML = "";
   }
 }
 
@@ -730,10 +723,18 @@ async function fetchUserSearchHistory(limit = 20) {
 
   try {
     const response = await fetch(`${BACKEND_BASE_URL}/users/${encodeURIComponent(session.email)}/searches?limit=${limit}`);
-    if (!response.ok) return [];
+    if (response.status === 404) {
+      // User not found, treat as no history, do not log
+      return [];
+    }
+    if (!response.ok) {
+      // For other errors, optionally log, but suppress for 404
+      return [];
+    }
     const data = await response.json();
     return Array.isArray(data.searches) ? data.searches : [];
-  } catch {
+  } catch (err) {
+    // Suppress all errors for this call (including network errors)
     return [];
   }
 }
