@@ -558,24 +558,31 @@ async function upsertBackendUser(user) {
 
 async function logUserSearch(queryText, searchType, resultCount) {
   const session = getStoredSession();
-  if (!session?.email) return;
+  if (!session?.email) {
+    console.warn("[logUserSearch] No session or email, skipping log.");
+    return;
+  }
 
   try {
     if (session.email && queryText) {
-      await fetch(`${BACKEND_BASE_URL}/users/searches`, {
+      const payload = {
+        email: session.email,
+        query_text: queryText,
+        search_type: searchType || "general",
+        result_count: resultCount || 0
+      };
+      console.log("[logUserSearch] POST /users/searches", payload);
+      const resp = await fetch(`${BACKEND_BASE_URL}/users/searches`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: session.email,
-          query_text: queryText,
-          search_type: searchType || "general",
-          result_count: resultCount || 0
-        })
+        body: JSON.stringify(payload)
       });
+      const respText = await resp.text();
+      console.log(`[logUserSearch] Response: ${resp.status} ${respText}`);
     }
     updateSidebarSearchHistory();
   } catch (error) {
-    console.warn("Could not log search to backend:", error.message || error);
+    console.error("[logUserSearch] Error logging search to backend:", error.message || error);
   }
 }
 
