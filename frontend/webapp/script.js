@@ -544,13 +544,15 @@ async function postJsonAllowStatus(url, payload) {
 
 async function upsertBackendUser(user) {
   try {
-    await postJson(`${BACKEND_BASE_URL}/users/upsert`, {
+    const resp = await postJson(`${BACKEND_BASE_URL}/users/upsert`, {
       name: user.name,
       email: user.email,
       provider: user.provider || "local",
     });
+    console.log("[upsertBackendUser] Success:", resp);
   } catch (error) {
-    console.warn("Could not sync user to backend:", error.message || error);
+    console.error("[upsertBackendUser] Error:", error);
+    showToast("Backend user creation failed: " + (error.message || error), 'error');
   }
 }
 
