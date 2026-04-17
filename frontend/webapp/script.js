@@ -561,8 +561,17 @@ async function logUserSearch(queryText, searchType, resultCount) {
   if (!session?.email) return;
 
   try {
-    if (session.email) {
-      await fetch(`${BACKEND_BASE_URL}/users/${encodeURIComponent(session.email)}/searches?limit=1`);
+    if (session.email && queryText) {
+      await fetch(`${BACKEND_BASE_URL}/users/searches`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: session.email,
+          query_text: queryText,
+          search_type: searchType || "general",
+          result_count: resultCount || 0
+        })
+      });
     }
     updateSidebarSearchHistory();
   } catch (error) {
