@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="style.css?v=20260414z">
 <meta charset="UTF-8">
 <title>ResumePro</title>
-  <link rel="stylesheet" href="style.css?v=20260414z">
 <link rel="icon" href="data:,">
 <script src="menu-sections.js?v=20260414a"></script>
 <!-- Google Sign-In SDK -->
@@ -164,119 +164,13 @@
         <div class="tab" onclick="switchTab('preview')">Preview &amp; Export</div>
       </div>
  
-      <!-- ── Build Tab ── -->
-      <div id="tab-build">
-        <div class="grid2 section-gap">
-          <div class="card">
-            <div class="card-title">Section 1: New Create Resume</div>
-            <div id="resume-required-hint" class="builder-structured-hint"></div>
-
-            <div class="builder-field">
-              <div class="field-label">Profile Type</div>
-              <select id="builder-profile-type" class="field-input">
-                <option value="fresher">Fresher</option>
-                <option value="professional">Professional</option>
-              </select>
-            </div>
-
-            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" type="text" placeholder="Enter full name"></div>
-            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" type="email" placeholder="Enter email"></div>
-            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" type="text" placeholder="Enter phone"></div>
-            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" type="text" placeholder="https://linkedin.com/in/username"></div>
-            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" type="text" placeholder="https://github.com/username"></div>
-            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" type="text" placeholder="https://yourportfolio.com"></div>
-            <div class="builder-field"><div class="field-label">Professional Summary</div><textarea id="builder-summary" class="field-input" style="min-height:120px;" placeholder="Write a concise role-focused summary"></textarea></div>
-            <div class="builder-field"><div class="field-label">Relevant Coursework (Optional)</div><textarea id="builder-coursework" class="field-input" style="min-height:90px;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems"></textarea></div>
-
-            <div class="builder-field">
-              <div class="field-label">Skills</div>
-              <div style="display:flex;gap:8px;">
-                <input id="new-skill" class="field-input" type="text" placeholder="Add one skill">
-                <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
-              </div>
-              <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Section 2: JD AI Optimizer (ATS 95+ Target)</div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Paste a job description and let AI convert your resume into a structured JD-aligned version.</div>
-            <div class="builder-field"><div class="field-label">Job Description</div><textarea id="builder-jd-text" class="field-input" style="min-height:220px;" placeholder="Paste complete JD here"></textarea></div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="btn btn-primary" type="button" onclick="optimizeBuilderResume95()">AI Convert For JD (Target 95+)</button>
-              <button class="btn btn-ghost" type="button" onclick="previewCurrentResume()">Preview Structured Resume</button>
-            </div>
-            <div id="builder-jd-result" style="margin-top:12px;background:rgba(99,102,241,0.07);border:1px solid var(--border2);border-radius:10px;padding:12px;font-size:13px;color:var(--text2);">Awaiting JD input.</div>
-          </div>
-        </div>
-
-        <div class="grid2 section-gap">
-          <div class="card">
-            <div class="card-title">Experience</div>
-            <div class="builder-field"><div class="field-label">Format: Role | Company | Duration | Achievement</div><textarea id="builder-experience-input" class="field-input" style="min-height:150px;" placeholder="Example: Backend Developer Intern | ABC Tech | Jan 2025 - Mar 2025 | Improved API response time by 30%"></textarea></div>
-            <button class="btn btn-primary" type="button" onclick="addExperience()">Add Experience</button>
-            <div id="builder-experience-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Education</div>
-            <div class="builder-field"><div class="field-label">Format: Degree | Institution | Year | Score</div><textarea id="builder-education-input" class="field-input" style="min-height:150px;" placeholder="Example: B.Tech CSE | JNTU | 2024 | 8.5 CGPA"></textarea></div>
-            <button class="btn btn-primary" type="button" onclick="addEducation()">Add Education</button>
-            <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-        </div>
-
-        <div class="card section-gap">
-          <div class="card-title">Projects</div>
-          <div class="builder-field"><div class="field-label">Use title/date line + bullet points</div><textarea id="builder-projects-input" class="field-input" style="min-height:160px;" placeholder="Project Name | React, Node.js | 2025&#10;- Built feature...&#10;- Improved performance..."></textarea></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
-            <button class="btn btn-ghost" type="button" onclick="autoFormatProjects()">Auto Format Projects</button>
-          </div>
-          <div id="builder-projects-list" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
-        </div>
-
-        <div class="grid2 section-gap">
-          <div class="card">
-            <div class="card-title">Certifications (Optional)</div>
-            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
-              <input id="builder-cert-name" class="field-input" type="text" placeholder="Certification" />
-              <input id="builder-cert-provider" class="field-input" type="text" placeholder="Details / Provider" />
-              <input id="builder-cert-year" class="field-input" type="text" placeholder="Date (e.g., Nov 2024)" />
-            </div>
-            <textarea id="builder-certifications-input" class="field-input" style="display:none;"></textarea>
-            <button class="btn btn-primary" type="button" onclick="addCertification()">Add Certification</button>
-            <div id="builder-certifications-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Achievements / Extra Activities</div>
-            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
-              <input id="builder-achievement-title" class="field-input" type="text" placeholder="Achievement" />
-              <input id="builder-achievement-context" class="field-input" type="text" placeholder="Context" />
-              <input id="builder-achievement-year" class="field-input" type="text" placeholder="Year" />
-            </div>
-            <textarea id="builder-achievements-input" class="field-input" style="display:none;"></textarea>
-            <button class="btn btn-primary" type="button" onclick="addAchievement()">Add Achievement</button>
-            <div id="builder-achievements-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
-          <button class="btn btn-ghost" type="button" onclick="clearBuilderData()">Clear All</button>
-          <button class="btn btn-ghost" type="button" onclick="saveResumeDraft()">Save Draft</button>
-          <button class="btn btn-primary" type="button" onclick="previewCurrentResume()">Preview Resume</button>
-        </div>
-      </div>
 
       <!-- ── Optimize Tab ── -->
-      <div id="tab-optimize" style="display:none;">
+      <div id="tab-optimize" style="display:block;">
         <div class="grid2">
           <div class="card">
             <div class="card-title">Paste Job Description</div>
-            <textarea class="field-input" id="jd-text" style="min-height:280px;font-size:12px;line-height:1.6;"></textarea>
+            <textarea class="field-input" id="jd-text" style="min-height:220px;width:100%;max-width:600px;font-size:12px;line-height:1.6;"></textarea>
             <div style="margin-top:12px;">
               <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="analyzeJD()">Analyze &amp; Optimize Resume</button>
             </div>

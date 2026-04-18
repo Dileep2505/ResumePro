@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="style.css?v=20260414z">
+  <style>
+    .field-input {
+      padding: 12px 14px !important;
+      border: 1.5px solid #d1d5db !important;
+      border-radius: 8px !important;
+      box-sizing: border-box;
+    }
+    textarea.field-input {
+      resize: vertical;
+    }
+  </style>
 <meta charset="UTF-8">
 <title>ResumePro</title>
-  <link rel="stylesheet" href="style.css?v=20260414z">
 <link rel="icon" href="data:,">
 <script src="menu-sections.js?v=20260414a"></script>
 <!-- Google Sign-In SDK -->
@@ -198,14 +209,14 @@
           <!-- Identity Section -->
           <div id="profile-section-identity" class="profile-section active">
             <div class="profile-section-title">Identity</div>
-            <div class="builder-field"><div class="field-label">Full Name</div><input class="field-input" id="profile-name" type="text" /></div>
-            <div class="builder-field"><div class="field-label">Role Title</div><input class="field-input" id="profile-role" type="text" placeholder="Software Developer" /></div>
-            <div class="builder-field"><div class="field-label">Location</div><input class="field-input" id="profile-location" type="text" placeholder="City, Country" /></div>
+            <div class="builder-field"><div class="field-label">Full Name</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-name" type="text" /></div>
+            <div class="builder-field"><div class="field-label">Role Title</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-role" type="text" placeholder="Software Developer" /></div>
+            <div class="builder-field"><div class="field-label">Location</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-location" type="text" placeholder="City, Country" /></div>
             <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
-              <input id="builder-project-title" class="field-input" type="text" placeholder="Project title" />
-              <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
-              <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
+              <input id="builder-project-title" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="Project title" />
+              <input id="builder-project-tech" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="Tech stack" />
+              <input id="builder-project-date" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="Date or duration" />
             </div>
             <textarea id="builder-project-bullets" class="field-input" style="min-height:120px;margin-top:8px;" placeholder="One bullet per line&#10;Built feature...&#10;Improved performance..."></textarea>
             <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
@@ -214,10 +225,10 @@
           <!-- Contact Section -->
           <div id="profile-section-contact" class="profile-section">
             <div class="profile-section-title">Contact</div>
-            <div class="builder-field"><div class="field-label">Email</div><input class="field-input" id="profile-email" type="email" /></div>
-            <div class="builder-field"><div class="field-label">Phone</div><input class="field-input" id="profile-phone" type="text" /></div>
-            <div class="builder-field"><div class="field-label">LinkedIn</div><input class="field-input" id="profile-linkedin" type="text" /></div>
-            <div class="builder-field"><div class="field-label">GitHub</div><input class="field-input" id="profile-github" type="text" /></div>
+            <div class="builder-field"><div class="field-label">Email</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-email" type="email" /></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-phone" type="text" /></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-linkedin" type="text" /></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input class="field-input" style="width:100%;max-width:500px;" id="profile-github" type="text" /></div>
           </div>
 
           <!-- Summary Section -->
@@ -264,11 +275,11 @@
                     <option value="upper">Graduation / Degree</option>
                   </select>
                 </div>
-                <div class="builder-field"><div class="field-label">School / College / University</div><input class="field-input" id="profile-edu-institution" type="text" placeholder="School or institution name" /></div>
-                <div class="builder-field"><div class="field-label">Degree / Stream</div><input class="field-input" id="profile-edu-degree" type="text" placeholder="For upper education: B.Tech, M.Sc, etc." /></div>
-                <div class="builder-field"><div class="field-label">Start Course</div><input class="field-input" id="profile-edu-start-course" type="text" placeholder="2018 or June 2018" /></div>
-                <div class="builder-field"><div class="field-label">End Course</div><input class="field-input" id="profile-edu-end-course" type="text" placeholder="2021 or May 2021" /></div>
-                <div class="builder-field"><div class="field-label">CGPA / Percentage</div><input class="field-input" id="profile-edu-score" type="text" placeholder="90% or 3.8 / 4.0" /></div>
+                <div class="builder-field"><div class="field-label">School / College / University</div><input class="field-input" id="profile-edu-institution" style="width:100%;max-width:500px;" type="text" placeholder="School or institution name" /></div>
+                <div class="builder-field"><div class="field-label">Degree / Stream</div><input class="field-input" id="profile-edu-degree" style="width:100%;max-width:500px;" type="text" placeholder="For upper education: B.Tech, M.Sc, etc." /></div>
+                <div class="builder-field"><div class="field-label">Start Course</div><input class="field-input" id="profile-edu-start-course" style="width:100%;max-width:500px;" type="text" placeholder="2018 or June 2018" /></div>
+                <div class="builder-field"><div class="field-label">End Course</div><input class="field-input" id="profile-edu-end-course" style="width:100%;max-width:500px;" type="text" placeholder="2021 or May 2021" /></div>
+                <div class="builder-field"><div class="field-label">CGPA / Percentage</div><input class="field-input" id="profile-edu-score" style="width:100%;max-width:500px;" type="text" placeholder="90% or 3.8 / 4.0" /></div>
                 <button class="btn btn-secondary" type="button" onclick="addProfileEducation()" style="width: 100%; margin-top: 12px;">Add Education</button>
               </div>
 
@@ -283,11 +294,11 @@
               <div style="font-size: 15px; font-weight: 600; color: var(--text1); margin-bottom: 16px;">Projects</div>
               
               <div class="project-form" style="background: rgba(99, 102, 241, 0.03); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
-                <div class="builder-field"><div class="field-label">Project Name</div><input class="field-input" id="profile-project-name" type="text" placeholder="E-Commerce Platform" /></div>
-                <div class="builder-field"><div class="field-label">Description</div><textarea class="field-input" id="profile-project-description" style="min-height: 80px;" placeholder="Brief description of the project"></textarea></div>
-                <div class="builder-field"><div class="field-label">Technologies Used</div><input class="field-input" id="profile-project-tech" type="text" placeholder="React, Node.js, MongoDB (comma-separated)" /></div>
-                <div class="builder-field"><div class="field-label">Duration</div><input class="field-input" id="profile-project-duration" type="text" placeholder="3 months" /></div>
-                <div class="builder-field"><div class="field-label">Link/GitHub</div><input class="field-input" id="profile-project-link" type="text" placeholder="https://github.com/..." /></div>
+                <div class="builder-field"><div class="field-label">Project Name</div><input class="field-input" id="profile-project-name" style="width:100%;max-width:500px;" type="text" placeholder="E-Commerce Platform" /></div>
+                <div class="builder-field"><div class="field-label">Description</div><textarea class="field-input" id="profile-project-description" style="min-height: 80px; width:100%;max-width:500px;" placeholder="Brief description of the project"></textarea></div>
+                <div class="builder-field"><div class="field-label">Technologies Used</div><input class="field-input" id="profile-project-tech" style="width:100%;max-width:500px;" type="text" placeholder="React, Node.js, MongoDB (comma-separated)" /></div>
+                <div class="builder-field"><div class="field-label">Duration</div><input class="field-input" id="profile-project-duration" style="width:100%;max-width:500px;" type="text" placeholder="3 months" /></div>
+                <div class="builder-field"><div class="field-label">Link/GitHub</div><input class="field-input" id="profile-project-link" style="width:100%;max-width:500px;" type="text" placeholder="https://github.com/..." /></div>
                 <button class="btn btn-secondary" type="button" onclick="addProfileProject()" style="width: 100%; margin-top: 12px;">Add Project</button>
               </div>
 

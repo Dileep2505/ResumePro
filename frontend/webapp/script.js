@@ -1659,6 +1659,7 @@ function logoutUser() {
   clearSession();
   appState.profile = getDefaultProfile();
   setAppVisibility(false);
+  setTimeout(() => window.location.reload(), 100);
 }
 
 function sendPasswordReset() {
@@ -7488,6 +7489,7 @@ function handleGoogleLogout() {
   clearSession();
   appState.profile = getDefaultProfile();
   setAppVisibility(false);
+  setTimeout(() => window.location.reload(), 100);
 }
 
 // Override the logoutUser function to handle Google logout
