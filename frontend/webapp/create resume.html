@@ -3,118 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>ResumePro</title>
-  <link rel="stylesheet" href="style.css?v=20260414z">
+<link rel="stylesheet" href="style.css?v=20260414z">
 <link rel="icon" href="data:,">
 <script src="menu-sections.js?v=20260414a"></script>
 <!-- Google Sign-In SDK -->
 <script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  .field-input {
+    padding: 12px 14px !important;
+    border: 1.5px solid #d1d5db !important;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+  }
+  textarea.field-input {
+    resize: vertical;
+  }
+</style>
 </head>
 <body>
 <div id="toast-container"></div>
-
-<div id="auth-screen" class="auth-screen">
-  <div class="auth-shell">
-    <div class="auth-hero">
-      <div class="auth-brand">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="auth-title">ResumePro</div>
-          <div class="auth-subtitle">Resume creation, ATS analysis, and job matching in one place.</div>
-        </div>
-      </div>
-      <div class="auth-points">
-        <div class="auth-point">Create a resume for fresher or professional profiles</div>
-        <div class="auth-point">Analyze ATS score and optimize for roles</div>
-        <div class="auth-point">Track jobs matched to your resume</div>
-      </div>
-    </div>
-
-    <div class="auth-card">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="auth-login-tab" type="button" onclick="showAuthForm('login')">Login</button>
-        <button class="auth-tab" id="auth-register-tab" type="button" onclick="showAuthForm('register')">Register</button>
-      </div>
-
-      <!-- Login Form -->
-      <div class="auth-form active" id="login-form">
-        <div class="field-label">Email</div>
-        <input class="field-input" id="login-email" type="email" placeholder="you@example.com" />
-        <div class="field-label">Password</div>
-        <input class="field-input" id="login-password" type="password" placeholder="Enter your password" />
-        <a href="#" class="auth-link" onclick="showAuthForm('forgot'); return false;">Forgot password?</a>
-        <button class="btn btn-primary auth-action" type="button" onclick="loginUser()">Login</button>
-
-        <!-- Divider -->
-        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
-          <div style="flex:1;height:1px;background:var(--surface2);"></div>
-          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
-          <div style="flex:1;height:1px;background:var(--surface2);"></div>
-        </div>
-
-        <!-- Google Login Button -->
-        <div id="google-login-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
-      </div>
-
-      <!-- Register Form -->
-      <div class="auth-form" id="register-form">
-        <div class="field-label">Full Name</div>
-        <input class="field-input" id="register-name" type="text" placeholder="Your name" />
-        <div class="field-label">Email</div>
-        <input class="field-input" id="register-email" type="email" placeholder="you@example.com" />
-        <div class="field-label">Password</div>
-        <input class="field-input" id="register-password" type="password" placeholder="Create a password" />
-        <div class="field-label">Confirm Password</div>
-        <input class="field-input" id="register-confirm-password" type="password" placeholder="Confirm password" />
-        <button class="btn btn-primary auth-action" type="button" onclick="registerUser()">Create Account</button>
-
-        <!-- Divider -->
-        <div style="display:flex;align-items:center;margin:16px 0;gap:12px;">
-          <div style="flex:1;height:1px;background:var(--surface2);"></div>
-          <div style="font-size:12px;color:var(--text2);">Or continue with</div>
-          <div style="flex:1;height:1px;background:var(--surface2);"></div>
-        </div>
-
-        <!-- Google Register Button -->
-        <div id="google-register-button" style="width:100%;min-height:45px;display:flex;align-items:center;justify-content:center;"></div>
-      </div>
-
-      <!-- Forgot Password Form -->
-      <div class="auth-form" id="forgot-form">
-        <h3 class="auth-form-title">Reset Password</h3>
-        <p class="auth-form-subtitle">Enter your email to receive a password reset code</p>
-        <div class="field-label">Email</div>
-        <input class="field-input" id="forgot-email" type="email" placeholder="you@example.com" />
-        <button class="btn btn-primary auth-action" type="button" onclick="sendPasswordReset()">Send Reset Code</button>
-        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
-      </div>
-
-      <!-- Reset Password Form -->
-      <div class="auth-form" id="reset-form">
-        <h3 class="auth-form-title">Create New Password</h3>
-        <div class="field-label">Reset Code</div>
-        <input class="field-input" id="reset-code" type="text" placeholder="Enter the code sent to your email" />
-        <div class="field-label">New Password</div>
-        <input class="field-input" id="reset-password" type="password" placeholder="Enter new password" />
-        <div class="field-label">Confirm Password</div>
-        <input class="field-input" id="reset-confirm-password" type="password" placeholder="Confirm new password" />
-        <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
-        <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <div class="app">
   <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
- 
-  <!-- ══════════════ SIDEBAR ══════════════ -->
   <div class="sidebar">
-    
     <div class="logo">
       <div class="logo-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -131,9 +41,7 @@
         <line x1="3" y1="18" x2="21" y2="18"></line>
       </svg>
     </button>
- 
     <resumepro-sidebar-menu></resumepro-sidebar-menu>
- 
     <div class="sidebar-user" id="sidebar-user-card">
       <div class="sidebar-user-main" onclick="showPage('profile')">
         <div class="profile-avatar"></div>
@@ -144,14 +52,12 @@
       <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
         <span>Settings</span>
       </button>
     </div>
   </div>
- 
-  <!-- ══════════════ MAIN ══════════════ -->
   <div class="main">
 <div id="page-create" class="page active fade-in">
       <div class="page-header">
@@ -171,20 +77,22 @@
             <div class="card-title">Header &amp; Contact</div>
             <div id="resume-required-hint" class="builder-structured-hint"></div>
 
-            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" type="text" placeholder="Enter full name"></div>
-            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" type="email" placeholder="Enter email"></div>
-            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" type="text" placeholder="Enter phone"></div>
-            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" type="text" placeholder="https://linkedin.com/in/username"></div>
-            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" type="text" placeholder="https://github.com/username"></div>
-            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" type="text" placeholder="https://yourportfolio.com"></div>
+            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" style="width:100%;max-width:500px;"type="text" placeholder="Enter full name"></div>
+            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" style="width:100%;max-width:500px;" type="email" placeholder="Enter email"></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="Enter phone"></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://linkedin.com/in/username"></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://github.com/username"></div>
+            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://yourportfolio.com"></div>
           </div>
 
-          <div class="card">
-            <div class="builder-field">
-              <div class="field-label">Professional Summary</div>
-              <textarea id="builder-summary" class="field-input" style="min-height:220px;" placeholder="Write a comprehensive professional summary tailored to the role you are targeting"></textarea>
+          <section class="card">
+            <div class="summary-box summary-box-professional">
+              <div class="builder-field">
+                <div class="field-label">Professional Summary</div>
+                <textarea id="builder-summary" class="section-textarea" style="margin-top:10px;min-height:320px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #609ef6 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="Write a comprehensive professional summary tailored to the role you are targeting"></textarea>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
 
         <div class="grid2 section-gap">
@@ -202,10 +110,14 @@
             <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
 
-          <div class="card">
+          <section class="card">
             <div class="card-title">Relevant Coursework</div>
-            <div class="builder-field"><textarea id="builder-coursework" class="field-input" style="min-height:120px;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems, Artificial Intelligence, etc."></textarea></div>
-          </div>
+            <div class="summary-box summary-box-coursework">
+              <div class="builder-field">
+                <textarea id="builder-coursework" class="section-textarea"  style="margin-top:10px;min-height:320px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #647183 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems, Artificial Intelligence, etc."></textarea>
+              </div>
+            </div>
+          </section>
         </div>
 
         <div class="grid2 section-gap">
@@ -231,7 +143,9 @@
               <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
               <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
             </div>
-            <textarea id="builder-project-bullets" class="field-input" style="min-height:100px;margin-top:8px;" placeholder="One bullet per line&#10;- Built feature...&#10;- Improved performance..."></textarea>
+            <section class="summary-box summary-box-project" style="margin-top:8px;">
+              <textarea id="builder-project-bullets" class="section-textarea" style="margin-top:10px;min-height:100px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #647183 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="One bullet per line&#10;- Built feature...&#10;- Improved performance..."></textarea>
+            </section>
             <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
             <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
             <div id="builder-projects-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
@@ -244,7 +158,7 @@
             <div class="builder-field">
               <div class="field-label">Add Skills</div>
               <div style="display:flex;gap:8px;">
-                <input id="new-skill" class="field-input" type="text" placeholder="Add one skill">
+                <input id="new-skill" class="field-input" type="text" style="width:100%;max-width:500px;" placeholder="Add one skill">
                 <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
               </div>
               <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
