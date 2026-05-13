@@ -109,6 +109,22 @@ class ResumeProSidebarMenu extends HTMLElement {
 
         </section>
 
+        <section class="nav-section" data-menu-section="sponsored">
+          <div class="nav-label">Sponsored</div>
+          <a
+            class="nav-item"
+            href="https://pleased-report.com/bx3LV_0.Pn3Mpav/bZmIVZJoZaD/0X3IMGDiQhyFM/jvIZxuLdTIcywbNODKIUy/M-jQUU"
+            target="_blank"
+            rel="sponsored nofollow noopener noreferrer"
+            style="text-decoration:none;"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+            <span>Open sponsored offer</span>
+          </a>
+        </section>
+
         <div id="history-dropdown" class="history-dropdown">
           <div class="history-loading">Loading history...</div>
         </div>
