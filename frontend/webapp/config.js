@@ -7,7 +7,7 @@
   const defaultBackendBaseUrl = isLocalHost
     ? "http://127.0.0.1:8001"
     : isProd
-      ? "https://resumepro2.me"
+      ? "https://api.resumepro2.me"
       : "https://api.resumepro2.me";
 
   window.RESUMEPRO_CONFIG = window.RESUMEPRO_CONFIG || {

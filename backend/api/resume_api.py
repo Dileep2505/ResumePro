@@ -2,9 +2,36 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from pydantic import BaseModel
 from backend.services.parser import extract_text, extract_resume_data
 from backend.services.skill_extractor import extract_skills, extract_skills_from_text
+
 from backend.services.scorer import calculate_ats_score
+from backend.services.job_matcher import match_jobs
+from backend.services.career_explorer import categorize_jobs
 
 router = APIRouter()
+
+
+class SuggestRolesRequest(BaseModel):
+    resume_text: str
+
+
+@router.post("/suggest-roles")
+async def suggest_roles(payload: SuggestRolesRequest):
+    """
+    Suggest suitable roles based on extracted skills from resume text.
+    """
+    # Extract skills from resume text
+    skills = extract_skills_from_text(payload.resume_text)
+    if not skills:
+        return {"roles": [], "message": "No skills found in resume."}
+
+    # Match jobs using job matcher
+    matches = match_jobs(skills)
+    # Categorize jobs (eligible, nearly eligible, not ready)
+    categorized = categorize_jobs(matches)
+
+    # Return top eligible roles (limit to 5 for brevity)
+    top_roles = categorized["eligible"][:5]
+    return {"roles": top_roles, "all_categories": categorized}
 
 class JDRequest(BaseModel):
     jd_text: str
