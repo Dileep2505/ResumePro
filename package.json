@@ -7,6 +7,8 @@
     "generate-favicons": "node tools/generate-favicons.js"
   },
   "dependencies": {
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "png-to-ico": "^1.0.0",
+    "to-ico": "^1.0.0"
   }
 }
