@@ -18,6 +18,13 @@ const outDir = 'frontend/webapp/assets';
     const icoUint8 = await toIco([buf16, buf32]);
     fs.writeFileSync(`${outDir}/favicon.ico`, Buffer.from(icoUint8));
     console.log('favicon.ico created');
+    // create a JPEG background image from the SVG logo for legacy usage
+    // wide banner / background size
+    await sharp(input)
+      .resize(1200, 630, { fit: 'cover' })
+      .jpeg({ quality: 90 })
+      .toFile(`${outDir}/resumepro-bg.jpeg`);
+    console.log('resumepro-bg.jpeg created');
   } catch (err) {
     console.error('Failed to generate favicons', err);
     process.exit(1);
