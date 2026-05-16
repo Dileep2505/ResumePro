@@ -388,7 +388,7 @@ function normalizeProjectItems(items) {
     .filter((item) => item && (item.title || item.tech || item.date || (item.bullets || []).length));
 }
 
-// Inject Tube Growth footer markup so all pages show the same end-of-page footer
+// Inject Resume Pro footer markup so all pages show the same end-of-page footer
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const footer = document.querySelector('footer');
@@ -396,10 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
     footer.innerHTML = `
       <div>
         <div class="footer-logo-container">
-          <div class="footer-logo">TG</div>
-          <div class="footer-logo-text"><span class="footer-logo-part-1">TUBE</span> <span class="footer-logo-part-2">GROWTH</span></div>
+          <div class="footer-logo">RP</div>
+          <div class="footer-logo-text"><span class="footer-logo-part-1">Resume</span> <span class="footer-logo-part-2">Pro</span></div>
         </div>
-        <p style="margin-top: 8px;color:#cfcfcf;">2025 TubeGrowth. All rights reserved.</p>
+        <p style="margin-top: 8px;color:#cfcfcf;">2025 Resume Pro. All rights reserved.</p>
       </div>
       <div class="footer-links">
         <a href="setting.html#settings-about-card">About</a>
