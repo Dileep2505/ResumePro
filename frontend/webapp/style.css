@@ -1600,6 +1600,46 @@ body:not(.auth-active) {
   animation: fadeIn 0.35s ease;
 }
 
+/* Footer: keep visible across the app by fixing to the viewport bottom.
+   On wide screens shift right to avoid the sidebar. */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,248,244,0.96));
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -10px 30px rgba(17, 58, 51, 0.06);
+}
+
+/* Prevent app content from visually colliding with the fixed footer */
+.app {
+  padding-bottom: 110px;
+}
+
+@media (min-width: 901px) {
+  footer {
+    left: 248px; /* sidebar width */
+    width: calc(100% - 248px);
+  }
+}
+
+footer .footer-links a {
+  color: var(--text2);
+  text-decoration: none;
+  margin-right: 12px;
+}
+
+footer .footer-links a:hover {
+  text-decoration: underline;
+}
+
 .card:hover {
   border-color: rgba(15, 118, 110, 0.34);
   box-shadow: 0 24px 44px rgba(16, 77, 69, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.86);
