@@ -1580,6 +1580,7 @@ async function registerUser() {
     appState.profile = loadProfileState();
     renderAuthenticatedUser(backendUser);
     setAppVisibility(true);
+    try { await showInterstitialAd('after-login', 1200); } catch (_) {}
     showPage("dashboard");
     renderAllPages(appState);
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -1605,6 +1606,7 @@ async function registerUser() {
   appState.profile = loadProfileState();
   renderAuthenticatedUser(newUser);
   setAppVisibility(true);
+  try { await showInterstitialAd('after-login', 1200); } catch (_) {}
   showPage("dashboard");
   renderAllPages(appState);
   window.scrollTo({ top: 0, behavior: "instant" });
@@ -1631,6 +1633,7 @@ async function loginUser() {
     appState.profile = loadProfileState();
     renderAuthenticatedUser(user);
     setAppVisibility(true);
+    try { await showInterstitialAd('after-login', 1200); } catch (_) {}
     showPage("dashboard");
     renderAllPages(appState);
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -1648,6 +1651,7 @@ async function loginUser() {
   appState.profile = loadProfileState();
   renderAuthenticatedUser(user);
   setAppVisibility(true);
+  try { await showInterstitialAd('after-login', 1200); } catch (_) {}
   showPage("dashboard");
   renderAllPages(appState);
   window.scrollTo({ top: 0, behavior: "instant" });
@@ -4656,6 +4660,21 @@ function showPage(id) {
     ensureUploadZoneContent();
   }
 
+  // Inject simple ad slots into key pages (avoid duplicates)
+  try {
+    if (id === "dashboard") {
+      renderAdSlot('#page-dashboard .page-header', 'dashboard-top');
+    }
+    if (id === "analyzer") {
+      renderAdSlot('#page-analyzer .page-header', 'analyzer-top');
+    }
+    if (id === "explorer") {
+      renderAdSlot('#page-explorer .page-header', 'explorer-top');
+    }
+  } catch (e) {
+    // non-fatal
+  }
+
   if (id === "settings") {
     loadSettingsSearchHistory();
   }
@@ -6249,6 +6268,48 @@ async function copyResumeLink() {
    FILE UPLOAD (FIXED)
 ══════════════════════════════════════════ */
 
+// Simple ad helpers (uses existing static banner from root index)
+function getAdHtml() {
+  return `<div class="ad-slot" style="text-align:center;margin:12px 0;"><a href="https://hilltopads.com/?ref=383607" target="_blank" rel="noopener noreferrer"><img src="//static.hilltopads.com/other/banners/pub/huge_income/728x90.gif?v=1778675776" alt="ad" style="max-width:100%;height:auto;border:0;"></a></div>`;
+}
+
+function renderAdSlot(target, slotId) {
+  try {
+    const parent = (typeof target === 'string') ? document.querySelector(target) : target;
+    if (!parent) return;
+    // Avoid adding duplicate slot
+    if (parent.querySelector('.ad-slot')) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = `ad-wrapper ${slotId || ''}`.trim();
+    wrapper.innerHTML = getAdHtml();
+    parent.appendChild(wrapper);
+  } catch (e) {
+    console.warn('renderAdSlot error', e);
+  }
+}
+
+async function showInterstitialAd(reason = '', ms = 1200) {
+  try {
+    const overlay = document.createElement('div');
+    overlay.className = 'ad-interstitial-overlay';
+    overlay.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999;';
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#fff;padding:10px;border-radius:6px;max-width:90%;max-height:80%;overflow:auto;box-shadow:0 8px 32px rgba(0,0,0,0.45);';
+    box.innerHTML = getAdHtml() + `<div style="text-align:center;margin-top:8px;"><button class="btn" id="closeAdBtn">Close</button></div>`;
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    return await new Promise((resolve) => {
+      const close = () => { try { overlay.remove(); } catch (_) {} resolve(); };
+      const btn = document.getElementById('closeAdBtn');
+      if (btn) btn.onclick = close;
+      setTimeout(close, ms);
+    });
+  } catch (e) {
+    return;
+  }
+}
+
 // CLICK trigger
 function triggerUpload(event) {
   if (blockGuestWriteAccess("file upload")) return;
@@ -6279,9 +6340,11 @@ function bindDropZoneInteractions() {
   dropZone.ondrop = (e) => {
     e.preventDefault();
     dropZone.style.border = "";
-
     const file = e.dataTransfer.files[0];
-    uploadFile(file);
+    (async () => {
+      try { await showInterstitialAd('before-upload', 1200); } catch (_) {}
+      uploadFile(file);
+    })();
   };
 }
 
@@ -6471,8 +6534,9 @@ async function uploadFile(file) {
 }
 
 // FILE SELECT
-function handleFileSelect(event) {
+async function handleFileSelect(event) {
   const file = event.target.files[0];
+  try { await showInterstitialAd('before-upload', 1200); } catch (_) {}
   uploadFile(file);
 }
 

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://resumepro2.me/sitemap.xml

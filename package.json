@@ -1,0 +1,8 @@
+{
+  "name": "resumepro",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File support/deploy.ps1"
+  }
+}
