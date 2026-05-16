@@ -601,6 +601,8 @@ body.auth-active {
 /* ── App Layout ── */
 .app {
   display: flex;
+  width: 100%;
+  min-width: 100%;
   height: auto;
   min-height: 100dvh;
   border: 1px solid rgba(20, 80, 72, 0.2);
@@ -622,6 +624,11 @@ body.auth-active {
   pointer-events: none;
   z-index: 0;
   filter: saturate(1.08) contrast(1.04);
+}
+
+/* Helper class to hide the faint background watermark when needed */
+.app.no-watermark::before {
+  opacity: 0 !important;
 }
 
 .sidebar,
@@ -1314,6 +1321,7 @@ body.auth-active {
   display: block;
   flex: 1;
   width: 100%;
+  opacity: 1 !important;
   animation: fadeInUp 0.5s ease;
 }
 
@@ -3646,6 +3654,7 @@ textarea.field-input {
    ANIMATIONS
 ══════════════════════════════════════════ */
 .fade-in {
+  opacity: 1;
   animation: fadeIn 0.4s ease forwards;
 }
 
