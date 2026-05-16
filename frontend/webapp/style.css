@@ -601,11 +601,11 @@ body.auth-active {
 /* ── App Layout ── */
 .app {
   display: flex;
-  height: 100dvh;
+  height: auto;
   min-height: 100dvh;
   border: 1px solid rgba(20, 80, 72, 0.2);
   border-radius: 0;
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(251, 250, 245, 0.95) 54%, rgba(244, 248, 240, 0.92) 100%);
   backdrop-filter: blur(14px);
   box-shadow: 0 26px 56px rgba(22, 64, 57, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.72);
@@ -1318,7 +1318,7 @@ body.auth-active {
 }
 
 body:not(.auth-active) {
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* ── Page Header ── */
@@ -1600,44 +1600,72 @@ body:not(.auth-active) {
   animation: fadeIn 0.35s ease;
 }
 
-/* Footer: keep visible across the app by fixing to the viewport bottom.
-   On wide screens shift right to avoid the sidebar. */
+/* Footer: sit at the end of the page with a dark, Tube Growth style */
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 500;
-  display: flex;
-  gap: 18px;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 18px 20px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,248,244,0.96));
-  border-top: 1px solid var(--border);
-  box-shadow: 0 -10px 30px rgba(17, 58, 51, 0.06);
+  background: #0b0b0d;
+  color: #d9d9d9;
+  padding: 40px 20px;
 }
 
-/* Prevent app content from visually colliding with the fixed footer */
-.app {
-  padding-bottom: 110px;
+.footer-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  background: transparent;
+}
+
+.footer-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo-part-1 {
+  font-weight: 700;
+  color: #e0b241; /* gold */
+  letter-spacing: 0.06em;
+}
+
+.footer-logo-part-2 {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.footer-links a {
+  color: #d9d9d9;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
 }
 
 @media (min-width: 901px) {
   footer {
-    left: 248px; /* sidebar width */
-    width: calc(100% - 248px);
+    padding: 48px 40px;
+    display: flex;
+    justify-content: flex-start;
+    gap: 48px;
   }
-}
-
-footer .footer-links a {
-  color: var(--text2);
-  text-decoration: none;
-  margin-right: 12px;
-}
-
-footer .footer-links a:hover {
-  text-decoration: underline;
 }
 
 .card:hover {
