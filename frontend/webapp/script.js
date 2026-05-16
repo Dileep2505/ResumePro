@@ -407,6 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="setting.html#terms-conditions">Terms of Service</a>
         <a href="setting.html#refund-policy">Refund Policy</a>
         <a href="setting.html#contact-page">Contact</a>
+        <a href="https://pleased-report.com/bC3xVL0.PK3-puvpbGmQVgJqZoDI0o3rMqDPQsy_MOjdIVxfL/TQcMwJNeDUISyTM/jdUR" target="_blank" rel="noopener noreferrer">External</a>
       </div>
     `;
   } catch (e) {
