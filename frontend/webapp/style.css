@@ -32,7 +32,7 @@ body {
   background-color: #efeee8;
   background-image:
     linear-gradient(145deg, rgba(239, 238, 232, 0.9) 0%, rgba(231, 235, 223, 0.88) 32%, rgba(248, 243, 232, 0.9) 70%, rgba(236, 238, 229, 0.9) 100%),
-    url('assets/resumepro-bg.jpeg');
+    url('assets/resumepro.svg');
   background-size: cover, min(78vw, 920px) auto;
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
@@ -619,7 +619,7 @@ body.auth-active {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('assets/resumepro-bg.jpeg') center 56% / clamp(240px, 44vw, 560px) auto no-repeat;
+  background: url('assets/resumepro.svg') center 56% / clamp(240px, 44vw, 560px) auto no-repeat;
   opacity: 0.16;
   pointer-events: none;
   z-index: 0;
@@ -776,7 +776,7 @@ body.auth-active {
   margin-bottom: 8px;
   border-radius: 14px;
   border: 1px solid rgba(208, 162, 74, 0.45);
-  background: #0c1110 url('assets/resumepro-bg.jpeg') center/cover no-repeat;
+  background: #0c1110 url('assets/resumepro.svg') center/cover no-repeat;
   box-shadow: 0 12px 24px rgba(9, 20, 18, 0.34);
 }
 

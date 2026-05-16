@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="120" viewBox="0 0 400 120" role="img" aria-label="Resume Pro logo">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#6c63ff"/>
+      <stop offset="100%" stop-color="#00c3ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="120" rx="12" fill="transparent" />
+  <circle cx="60" cy="60" r="44" fill="url(#g1)" />
+  <text x="60" y="72" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="48" fill="#fff" font-weight="700" text-anchor="middle">RP</text>
+  <text x="140" y="75" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="36" fill="#111" font-weight="700">Resume</text>
+  <text x="265" y="75" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="36" fill="#6c63ff" font-weight="700">Pro</text>
+</svg>
