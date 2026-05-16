@@ -388,6 +388,33 @@ function normalizeProjectItems(items) {
     .filter((item) => item && (item.title || item.tech || item.date || (item.bullets || []).length));
 }
 
+// Inject Tube Growth footer markup so all pages show the same end-of-page footer
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+    footer.innerHTML = `
+      <div>
+        <div class="footer-logo-container">
+          <div class="footer-logo">TG</div>
+          <div class="footer-logo-text"><span class="footer-logo-part-1">TUBE</span> <span class="footer-logo-part-2">GROWTH</span></div>
+        </div>
+        <p style="margin-top: 8px;color:#cfcfcf;">2025 TubeGrowth. All rights reserved.</p>
+      </div>
+      <div class="footer-links">
+        <a href="setting.html#settings-about-card">About</a>
+        <a href="setting.html#privacy-policy">Privacy Policy</a>
+        <a href="setting.html#terms-conditions">Terms of Service</a>
+        <a href="setting.html#refund-policy">Refund Policy</a>
+        <a href="setting.html#contact-page">Contact</a>
+      </div>
+    `;
+  } catch (e) {
+    // fail silently
+    console.error('Footer injection failed', e);
+  }
+});
+
 function getStructuredProjectsFromSource(source, rawText = "") {
   const items = Array.isArray(source) ? source : [];
   if (!items.length) {
