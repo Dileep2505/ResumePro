@@ -204,9 +204,11 @@ function closeAboutModal() {
         </div>
 
         <div id="settings-about-card" class="card">
-          <div class="card-title">Support &amp; About</div>
+          <div class="card-title">About Page</div>
           <div style="font-size:13px;color:var(--text2);line-height:1.7;">
-            <b>ResumePro</b> is an AI-assisted resume platform that helps you analyze resumes, improve ATS scores, and find job matches based on your skills.<br><br>
+            <b>Who we are:</b> ResumePro is an AI-assisted resume platform for job seekers who want clearer resume feedback, stronger ATS scores, and better role matching.<br><br>
+            <b>What this website is about:</b> Resume analysis, JD optimization, job matching, and career exploration in one place.<br><br>
+            <b>Our mission:</b> Make resume improvement practical, fast, and easy to understand with structured guidance and useful insights.<br><br>
             <b>Features:</b><br>
             • Resume analysis and structured parsing<br>
             • Job matching with skill-gap insights<br>
@@ -225,6 +227,38 @@ function closeAboutModal() {
         </div>
       </div>
 
+      <div class="grid2 section-gap">
+        <div id="privacy-policy" class="card">
+          <div class="card-title">Privacy Policy</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+            We use cookies to improve site performance, remember preferences, and serve Google AdSense ads. Google and other third-party advertising partners may use cookies or similar technologies to personalize ads and measure performance. We also use analytics tools to understand traffic, page views, and feature usage. By using this site, you agree that basic technical and usage data may be collected for security, debugging, and product improvement.
+          </div>
+        </div>
+
+        <div id="terms-conditions" class="card">
+          <div class="card-title">Terms &amp; Conditions</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+            Use the site lawfully and responsibly. You are responsible for the accuracy of any resume or profile data you upload. All site design, branding, and content remain the property of ResumePro. The service is provided as-is; we are not liable for outages, third-party services, or decisions made from the information generated here.
+          </div>
+        </div>
+      </div>
+
+      <div id="contact-page" class="card section-gap">
+        <div class="card-title">Contact Page</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+          Need help or want to report an issue? Email <a href="mailto:resumepro.support@gmail.com" style="color:var(--accent3);">resumepro.support@gmail.com</a>. You can also use the form below to open your mail app.
+        </div>
+        <form action="mailto:resumepro.support@gmail.com" method="post" enctype="text/plain" style="display:grid;gap:10px;margin-top:14px;">
+          <input name="name" type="text" placeholder="Your name" style="padding:12px 14px;border-radius:10px;border:1px solid var(--surface2);background:var(--surface1);color:var(--text1);">
+          <input name="email" type="email" placeholder="Your email" style="padding:12px 14px;border-radius:10px;border:1px solid var(--surface2);background:var(--surface1);color:var(--text1);">
+          <textarea name="message" rows="4" placeholder="Your message" style="padding:12px 14px;border-radius:10px;border:1px solid var(--surface2);background:var(--surface1);color:var(--text1);resize:vertical;"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" type="submit">Send Email</button>
+            <a class="btn btn-ghost" href="https://github.com/Dileep2505/ResumePro" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">GitHub</a>
+          </div>
+        </form>
+      </div>
+
       <div class="card section-gap">
         <div class="card-title">Recent Searches</div>
         <div id="settings-history-list" class="sidebar-settings-history-list" style="max-height:280px;">
@@ -237,6 +271,18 @@ function closeAboutModal() {
     
 </div><!-- /app -->
  
+<footer style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 16px 32px;">
+  <nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;font-size:13px;">
+    <a href="#privacy-policy" style="color:var(--text2);text-decoration:none;">Privacy Policy</a>
+    <a href="#terms-conditions" style="color:var(--text2);text-decoration:none;">Terms &amp; Conditions</a>
+    <a href="#settings-about-card" style="color:var(--text2);text-decoration:none;">About</a>
+    <a href="#contact-page" style="color:var(--text2);text-decoration:none;">Contact</a>
+  </nav>
+  <a href="https://beta.publishers.adsterra.com/referral/RnCLaJAE2j" rel="nofollow sponsored noopener" target="_blank" style="display:inline-block;max-width:100%;">
+    <img alt="banner" src="https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png" width="728" height="90" style="display:block;max-width:100%;height:auto;" />
+  </a>
+</footer>
+
 
 <script src="vendor/chart.umd.min.js"></script>
 <script src="config.js?v=20260409h"></script>
