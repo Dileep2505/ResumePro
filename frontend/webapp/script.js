@@ -409,6 +409,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="setting.html#contact-page">Contact</a>
         <a href="https://pleased-report.com/bC3xVL0.PK3-puvpbGmQVgJqZoDI0o3rMqDPQsy_MOjdIVxfL/TQcMwJNeDUISyTM/jdUR" target="_blank" rel="noopener noreferrer">External</a>
       </div>
+      <div class="site-ad">
+        <a href="https://beta.publishers.adsterra.com/referral/RnCLaJAE2j" rel="nofollow sponsored noopener" target="_blank">
+          <img alt="ad" src="https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png" style="max-width:100%;height:auto;border-radius:6px;" />
+        </a>
+      </div>
     `;
   } catch (e) {
     // fail silently

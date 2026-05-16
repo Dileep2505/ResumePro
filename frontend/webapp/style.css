@@ -1621,6 +1621,13 @@ footer {
   gap: 12px;
 }
 
+.site-ad {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .footer-logo {
   width: 48px;
   height: 48px;
