@@ -2821,7 +2821,7 @@ function renderBuilder(state) {
 }
 
 function renderLearning(state) {
-  const page = document.getElementById("page-learning") || document.getElementById("page-jobs");
+  const page = document.getElementById("page-learning");
   if (!page) return;
 
   const resumeData = state.resume_data || {};
