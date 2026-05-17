@@ -268,6 +268,27 @@ body::after {
   padding: 24px;
 }
 
+/* Ensure auth card shows footer reliably on small screens */
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px);
+}
+.auth-card .auth-form {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+.auth-card .auth-footer {
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--surface2);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text3);
+}
+.auth-card .auth-footer a { color: var(--text2); text-decoration: none; }
+
 .project-structured-card {
   background: var(--surface2);
   border-radius: 10px;
