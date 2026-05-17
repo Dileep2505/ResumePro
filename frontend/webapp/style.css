@@ -30,14 +30,11 @@
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: #efeee8;
-  background-image:
-    linear-gradient(145deg, rgba(239, 238, 232, 0.9) 0%, rgba(231, 235, 223, 0.88) 32%, rgba(248, 243, 232, 0.9) 70%, rgba(236, 238, 229, 0.9) 100%),
-    url('assets/resumepro.svg');
-  /* Keep the decorative gradient full size but constrain the watermark SVG to a reasonable width */
-  background-size: cover, clamp(160px, 44vw, 560px) auto;
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
-  background-attachment: fixed, fixed;
+  background-image: linear-gradient(145deg, rgba(239, 238, 232, 0.9) 0%, rgba(231, 235, 223, 0.88) 32%, rgba(248, 243, 232, 0.9) 70%, rgba(236, 238, 229, 0.9) 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--text1);
   font-size: 15px;
   line-height: 1.6;
@@ -620,8 +617,8 @@ body.auth-active {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('assets/resumepro.svg') center 56% / clamp(240px, 44vw, 560px) auto no-repeat;
-  opacity: 0.16;
+  background: url('assets/resumepro.svg') center 56% / clamp(160px, 24vw, 320px) auto no-repeat;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 0;
   filter: saturate(1.08) contrast(1.04);
