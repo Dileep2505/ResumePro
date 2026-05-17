@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Search Console verification: replace the content value with your token -->
+  <meta name="google-site-verification" content="REPLACE_WITH_GOOGLE_TOKEN" />
+<meta charset="UTF-8">
+<title>Resume Pro</title>
+<meta property="og:site_name" content="Resume Pro">
+<meta property="og:title" content="Resume Pro">
+<meta property="og:image" content="https://resumepro2.me/assets/resumepro.svg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Resume Pro","url":"https://resumepro2.me","logo":"https://resumepro2.me/assets/resumepro.svg"}
+</script>
+<link rel="stylesheet" href="style.css?v=20260517a">
+<link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon-32x32.png">
+<link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+<script src="menu-sections.js?v=20260514b"></script>
+<!-- Google Sign-In SDK -->
+<script id="google-gsi-script" src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  .field-input {
+    padding: 12px 14px !important;
+    border: 1.5px solid #d1d5db !important;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+  }
+  textarea.field-input {
+    resize: vertical;
+  }
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="app">
+  <div id="menu-backdrop" class="menu-backdrop" onclick="closeSidebarMenu()"></div>
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <img src="assets/resumepro.svg" alt="Resume Pro" class="site-logo">
+      </div>
+      <div class="logo-name">ResumePro</div>
+      <div class="logo-sub">Career Intelligence Platform</div>
+    </div>
+    <button class="sidebar-menu-toggle" type="button" onclick="toggleSidebarMenu()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+    <resumepro-sidebar-menu></resumepro-sidebar-menu>
+    <div class="sidebar-user" id="sidebar-user-card">
+      <div class="sidebar-user-main" onclick="showPage('profile')">
+        <div class="profile-avatar"></div>
+        <div class="sidebar-user-meta">
+          <div id="sidebar-user-name" class="sidebar-user-name">&nbsp;</div>
+        </div>
+      </div>
+      <button id="sidebar-settings-trigger" class="sidebar-settings-trigger" type="button" onclick="showPage('settings')" aria-label="Open settings page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0A1.65 1.65 0 0 0 9.91 3.1V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0A1.65 1.65 0 0 0 20.9 9.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
+  <div class="main">
+<div id="page-create" class="page active fade-in">
+      <div class="page-header">
+        <div class="page-title">Create Resume</div>
+        <div class="page-sub">Build your professional resume from scratch with structured fields</div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab('build')">Build from Scratch</div>
+        <div class="tab" onclick="switchTab('preview')">Preview &amp; Export</div>
+      </div>
+
+      <!-- ── Build Tab ── -->
+      <div id="tab-build-shared">
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Header &amp; Contact</div>
+            <div id="resume-required-hint" class="builder-structured-hint"></div>
+
+            <div class="builder-field"><div class="field-label">Full Name</div><input id="builder-name" class="field-input" style="width:100%;max-width:500px;"type="text" placeholder="Enter full name"></div>
+            <div class="builder-field"><div class="field-label">Email</div><input id="builder-email" class="field-input" style="width:100%;max-width:500px;" type="email" placeholder="Enter email"></div>
+            <div class="builder-field"><div class="field-label">Phone</div><input id="builder-phone" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="Enter phone"></div>
+            <div class="builder-field"><div class="field-label">LinkedIn</div><input id="builder-linkedin" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://linkedin.com/in/username"></div>
+            <div class="builder-field"><div class="field-label">GitHub</div><input id="builder-github" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://github.com/username"></div>
+            <div class="builder-field"><div class="field-label">Portfolio</div><input id="builder-portfolio" class="field-input" style="width:100%;max-width:500px;" type="text" placeholder="https://yourportfolio.com"></div>
+          </div>
+
+          <section class="card">
+            <div class="summary-box summary-box-professional">
+              <div class="builder-field">
+                <div class="field-label">Professional Summary</div>
+                <textarea id="builder-summary" class="section-textarea" style="margin-top:10px;min-height:320px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #609ef6 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="Write a comprehensive professional summary tailored to the role you are targeting"></textarea>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Education</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-education-degree" class="field-input" type="text" placeholder="Degree" />
+              <input id="builder-education-institution" class="field-input" type="text" placeholder="Institution" />
+              <input id="builder-education-year" class="field-input" type="text" placeholder="Year" />
+              <input id="builder-education-score" class="field-input" type="text" placeholder="Score" />
+            </div>
+            <textarea id="builder-education-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addEducation()">Add Education</button>
+            <div id="builder-education-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <section class="card">
+            <div class="card-title">Relevant Coursework</div>
+            <div class="summary-box summary-box-coursework">
+              <div class="builder-field">
+                <textarea id="builder-coursework" class="section-textarea"  style="margin-top:10px;min-height:320px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #647183 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="Data Structures, Algorithms, DBMS, Operating Systems, Artificial Intelligence, etc."></textarea>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Experience</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-experience-role" class="field-input" type="text" placeholder="Role" />
+              <input id="builder-experience-company" class="field-input" type="text" placeholder="Company" />
+              <input id="builder-experience-duration" class="field-input" type="text" placeholder="Duration" />
+              <input id="builder-experience-impact" class="field-input" type="text" placeholder="Achievement / Impact" />
+            </div>
+            <textarea id="builder-experience-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addExperience()">Add Experience</button>
+            <div id="builder-experience-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"><div style="background:var(--surface2);border-radius:10px;padding:10px 12px;color:var(--text3);font-size:13px;">Add your work experience here</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Projects</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
+              <input id="builder-project-title" class="field-input" type="text" placeholder="Project title" />
+              <input id="builder-project-tech" class="field-input" type="text" placeholder="Tech stack" />
+              <input id="builder-project-date" class="field-input" type="text" placeholder="Date or duration" />
+            </div>
+            <section class="summary-box summary-box-project" style="margin-top:8px;">
+              <textarea id="builder-project-bullets" class="section-textarea" style="margin-top:10px;min-height:100px;width:100%;max-width:500px;font-size:12px;line-height:1.6;padding: 12px 14px !important;border: 1.5px solid #647183 !important;border-radius: 8px !important;box-sizing: border-box;" placeholder="One bullet per line&#10;- Built feature...&#10;- Improved performance..."></textarea>
+            </section>
+            <textarea id="builder-projects-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addProject()">Add Project</button>
+            <div id="builder-projects-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="grid2 section-gap">
+          <div class="card">
+            <div class="card-title">Technical Skills</div>
+            <div class="builder-field">
+              <div class="field-label">Add Skills</div>
+              <div style="display:flex;gap:8px;">
+                <input id="new-skill" class="field-input" type="text" style="width:100%;max-width:500px;" placeholder="Add one skill">
+                <button class="btn btn-primary" type="button" onclick="addSkill()">Add</button>
+              </div>
+              <div id="skills-list" class="chip-list" style="margin-top:10px;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Certifications (Optional)</div>
+            <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+              <input id="builder-cert-name" class="field-input" type="text" placeholder="Certification" />
+              <input id="builder-cert-provider" class="field-input" type="text" placeholder="Details / Provider" />
+              <input id="builder-cert-year" class="field-input" type="text" placeholder="Date (e.g., Nov 2024)" />
+            </div>
+            <textarea id="builder-certifications-input" class="field-input" style="display:none;"></textarea>
+            <button class="btn btn-primary" type="button" onclick="addCertification()">Add Certification</button>
+            <div id="builder-certifications-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <div class="card section-gap">
+          <div class="card-title">Leadership / Extracurricular</div>
+          <div class="field-label" style="margin-bottom:8px;">Structured fields</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;">
+            <input id="builder-achievement-title" class="field-input" type="text" placeholder="Achievement" />
+            <input id="builder-achievement-context" class="field-input" type="text" placeholder="Context" />
+            <input id="builder-achievement-year" class="field-input" type="text" placeholder="Year" />
+          </div>
+          <textarea id="builder-achievements-input" class="field-input" style="display:none;"></textarea>
+          <button class="btn btn-primary" type="button" onclick="addAchievement()">Add Achievement</button>
+          <div id="builder-achievements-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" type="button" onclick="clearBuilderData()">Clear All</button>
+          <button class="btn btn-ghost" type="button" onclick="saveResumeDraft()">Save Draft</button>
+          <button class="btn btn-primary" type="button" onclick="previewCurrentResume()">Preview Resume</button>
+        </div>
+      </div>
+
+      <!-- ── Preview Tab ── -->
+      <div id="tab-preview-shared" style="display:none;">
+        <div id="resume-template-selector-shared" class="resume-template-selector"></div>
+        <div class="resume-preview-shell">
+          <div class="resume-preview">
+            <div class="resume-a4">
+              <header class="resume-head">
+                <div>
+                  <h1>Your Name</h1>
+                </div>
+              </header>
+              <section class="resume-block">
+                <h3>Summary</h3>
+                <p>Build your resume using the form above, then click Preview to see the formatted result.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:1.5rem;">
+          <button class="btn btn-primary" onclick="downloadResumePDF()">Download PDF</button>
+          <button class="btn btn-ghost" onclick="downloadResumeDOCX()">Download DOCX</button>
+          <button class="btn btn-ghost" onclick="copyResumeLink()">Copy Link</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main -->
+
+    
+</div><!-- /app -->
+ 
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="config.js?v=20260409h"></script>
+<script src="script.js?v=20260516f"></script>
+
+<footer>
+  <div>
+    <div class="footer-logo-container">
+      <div class="footer-logo">RP</div>
+      <div class="footer-logo-text"><span class="footer-logo-part-1">Resume</span> <span class="footer-logo-part-2">Pro</span></div>
+    </div>
+    <p style="margin-top: 8px;color:#cfcfcf;">2025 Resume Pro. All rights reserved.</p>
+  </div>
+  <div class="footer-links">
+    <a href="setting.html#settings-about-card">About</a>
+    <a href="setting.html#privacy-policy">Privacy Policy</a>
+    <a href="setting.html#terms-conditions">Terms of Service</a>
+    <a href="setting.html#refund-policy">Refund Policy</a>
+    <a href="setting.html#contact-page">Contact</a>
+
+    <div style="margin-left:auto;align-self:flex-end;">
+      <a href="https://beta.publishers.adsterra.com/referral/RnCLaJAE2j" rel="nofollow sponsored noopener" target="_blank" style="display:inline-block;max-width:100%;">
+        <img alt="banner" src="https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png" width="728" height="90" style="display:block;max-width:100%;height:auto;border-radius:6px;" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

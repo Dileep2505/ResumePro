@@ -1,0 +1,3 @@
+# ResumePro ads.txt
+# Add your ad network's authorized seller lines here if you use one.
+# This file exists so ads.txt resolves with HTTP 200 instead of 404.
