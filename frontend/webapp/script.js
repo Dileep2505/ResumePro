@@ -1157,6 +1157,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (existing) existing.remove();
     }
   });
+  // Inject global footer for pages that lack one
+  try {
+    if (!document.getElementById('rp-footer')) {
+      const footer = document.createElement('footer');
+      footer.id = 'rp-footer';
+      footer.innerHTML = `
+        <div class="rp-footer-inner">
+          <div class="rp-copy">© 2026 Resume Pro. All rights reserved.</div>
+          <div class="rp-links">
+            <a href="setting.html#privacy-policy">Privacy</a>
+            · <a href="setting.html#terms-conditions">Terms</a>
+            · <a href="setting.html#contact-page">Contact</a>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(footer);
+    }
+  } catch (err) {
+    console.warn('Footer injection failed', err);
+  }
 });
 
 function getResetTokens() {
