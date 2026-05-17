@@ -1180,9 +1180,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // If an auth modal/screen is active, add a compact footer inside it so users see links
   try {
     const authShell = document.querySelector('.auth-shell');
-    if (authShell && !document.getElementById('rp-auth-footer')) {
+    if (authShell && !document.getElementById('rp-auth-footer-panel')) {
       const afoot = document.createElement('div');
-      afoot.id = 'rp-auth-footer';
+      afoot.id = 'rp-auth-footer-panel';
       afoot.style.width = '100%';
       afoot.style.marginTop = '12px';
       afoot.style.padding = '12px 14px';
@@ -1196,9 +1196,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="rp-auth-copy">© 2026 Resume Pro.</div>
         <div class="rp-auth-links"><a href="setting.html#privacy-policy">Privacy</a> · <a href="setting.html#terms-conditions">Terms</a> · <a href="setting.html#contact-page">Contact</a></div>
       `;
-      // Make links inherit color and not be too bright
       afoot.querySelectorAll('a').forEach(a=>{ a.style.color='var(--text2)'; a.style.textDecoration='none'; });
-      authShell.appendChild(afoot);
+      // Prefer inserting at end of .auth-card if present
+      const authCard = authShell.querySelector('.auth-card');
+      if (authCard) authCard.appendChild(afoot); else authShell.appendChild(afoot);
     }
   } catch (err) {
     console.warn('Auth footer injection failed', err);
