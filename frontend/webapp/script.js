@@ -409,17 +409,89 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="setting.html#contact-page">Contact</a>
         <a href="https://pleased-report.com/bC3xVL0.PK3-puvpbGmQVgJqZoDI0o3rMqDPQsy_MOjdIVxfL/TQcMwJNeDUISyTM/jdUR" target="_blank" rel="noopener noreferrer">External</a>
       </div>
-      <div class="site-ad">
-        <a href="https://beta.publishers.adsterra.com/referral/RnCLaJAE2j" rel="nofollow sponsored noopener" target="_blank">
-          <img alt="ad" src="https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png" style="max-width:100%;height:auto;border-radius:6px;" />
-        </a>
-      </div>
+        <!-- Inline site ad removed; ads will be displayed as a controlled popup modal -->
     `;
   } catch (e) {
     // fail silently
     console.error('Footer injection failed', e);
   }
 });
+
+  // Remove existing inline ad banners that may be present in static HTML
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const adSelectors = [
+        'a[rel*="sponsored"]',
+        'a[href*="adsterra"]',
+        'a[href*="pleased-report"]',
+        'img[src*="adsterratech"]',
+        '.site-ad',
+        'img[src*="landings-cdn.adsterratech"]'
+      ];
+      adSelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => el.remove());
+      });
+    } catch (err) {
+      console.warn('Ad cleanup failed', err);
+    }
+
+    // Controlled ad popup: shown at most once per session
+    try {
+      const AD_SESSION_KEY = 'resumepro_ad_shown_v1';
+      if (!sessionStorage.getItem(AD_SESSION_KEY)) {
+        // show after a short delay so it doesn't interrupt page load
+        setTimeout(() => {
+          showAdPopup();
+          sessionStorage.setItem(AD_SESSION_KEY, '1');
+        }, 3000);
+      }
+    } catch (err) {
+      console.warn('Ad popup failed', err);
+    }
+  });
+
+  function showAdPopup() {
+    try {
+      // create style element for modal
+      const style = document.createElement('style');
+      style.textContent = `
+        .rp-ad-modal { position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99999 }
+        .rp-ad-box { background:#fff;border-radius:8px;padding:12px;max-width:820px;width:92%;box-shadow:0 8px 30px rgba(0,0,0,.3);position:relative }
+        .rp-ad-box img{width:100%;height:auto;border-radius:6px;display:block}
+        .rp-ad-close{position:absolute;right:8px;top:6px;background:transparent;border:none;font-size:20px;cursor:pointer}
+      `;
+      document.head.appendChild(style);
+
+      const modal = document.createElement('div');
+      modal.className = 'rp-ad-modal';
+
+      const box = document.createElement('div');
+      box.className = 'rp-ad-box';
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'rp-ad-close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.onclick = () => modal.remove();
+
+      // Ad content — clickable banner. Modify href/src to change ad provider.
+      const anchor = document.createElement('a');
+      anchor.href = 'https://beta.publishers.adsterra.com/referral/RnCLaJAE2j';
+      anchor.rel = 'nofollow sponsored noopener';
+      anchor.target = '_blank';
+
+      const img = document.createElement('img');
+      img.alt = 'Sponsored offer';
+      img.src = 'https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png';
+
+      anchor.appendChild(img);
+      box.appendChild(closeBtn);
+      box.appendChild(anchor);
+      modal.appendChild(box);
+      document.body.appendChild(modal);
+    } catch (err) {
+      console.warn('Failed to render ad popup', err);
+    }
+  }
 
 function getStructuredProjectsFromSource(source, rawText = "") {
   const items = Array.isArray(source) ? source : [];
