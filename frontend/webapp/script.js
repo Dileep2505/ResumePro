@@ -438,7 +438,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Controlled ad popup: shown at most once per session
     try {
       const AD_SESSION_KEY = 'resumepro_ad_shown_v1';
-      if (!sessionStorage.getItem(AD_SESSION_KEY)) {
+      // Respect a runtime configuration flag before showing ads.
+      window.resumeProConfig = window.resumeProConfig || {};
+      const ADS_ENABLED = !!window.resumeProConfig.adsEnabled;
+      if (ADS_ENABLED && !sessionStorage.getItem(AD_SESSION_KEY)) {
         // show after a short delay so it doesn't interrupt page load
         setTimeout(() => {
           showAdPopup();
@@ -475,13 +478,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Ad content — clickable banner. Modify href/src to change ad provider.
       const anchor = document.createElement('a');
-      anchor.href = 'https://beta.publishers.adsterra.com/referral/RnCLaJAE2j';
+      // Allow overriding the ad target and image via `window.resumeProConfig`.
+      const adHref = (window.resumeProConfig && window.resumeProConfig.adHref) || 'https://beta.publishers.adsterra.com/referral/RnCLaJAE2j';
+      const adImg = (window.resumeProConfig && window.resumeProConfig.adImgSrc) || 'https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png';
+
+      anchor.href = adHref;
       anchor.rel = 'nofollow sponsored noopener';
       anchor.target = '_blank';
 
       const img = document.createElement('img');
       img.alt = 'Sponsored offer';
-      img.src = 'https://landings-cdn.adsterratech.com/referralBanners/png/728%20x%2090%20px.png';
+      img.src = adImg;
 
       anchor.appendChild(img);
       box.appendChild(closeBtn);
