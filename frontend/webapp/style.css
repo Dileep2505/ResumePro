@@ -4254,3 +4254,24 @@ textarea.field-input {
     font-size: 20px;
   }
 }
+
+/* Reduce or hide faint watermark on small screens to avoid covering content */
+@media (max-width: 900px) {
+  .app::before {
+    opacity: 0 !important;
+    background-size: 0 !important;
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* ensure nothing overlaps on very small viewports */
+  .app {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  body::before, body::after {
+    background: none !important;
+  }
+}
