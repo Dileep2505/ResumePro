@@ -1060,7 +1060,7 @@ function openAboutSettings() {
 
 function openHelpFeedback() {
   closeSidebarSettingsMenu();
-  const subject = encodeURIComponent("ResumePro Help and Feedback");
+  const subject = encodeURIComponent("Resume Pro Help and Feedback");
   window.open(`mailto:resumepro.support@gmail.com?subject=${subject}`, "_blank");
   showToast("Opening your email app for feedback.", "success");
 }
