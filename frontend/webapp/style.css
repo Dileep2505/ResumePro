@@ -33,7 +33,8 @@ body {
   background-image:
     linear-gradient(145deg, rgba(239, 238, 232, 0.9) 0%, rgba(231, 235, 223, 0.88) 32%, rgba(248, 243, 232, 0.9) 70%, rgba(236, 238, 229, 0.9) 100%),
     url('assets/resumepro.svg');
-  background-size: cover, min(78vw, 920px) auto;
+  /* Keep the decorative gradient full size but constrain the watermark SVG to a reasonable width */
+  background-size: cover, clamp(160px, 44vw, 560px) auto;
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
   background-attachment: fixed, fixed;
@@ -1472,6 +1473,12 @@ img, .site-logo, svg {
   }
   .auth-card {
     padding: 16px;
+  }
+
+  /* On small screens remove the large watermark background to avoid covering content */
+  body {
+    background-image: linear-gradient(145deg, rgba(239, 238, 232, 0.96) 0%, rgba(231, 235, 223, 0.96) 32%, rgba(248, 243, 232, 0.96) 70%, rgba(236, 238, 229, 0.96) 100%);
+    background-attachment: scroll, scroll;
   }
 
   /* Relax grid minimum sizes on small screens so cards can stack cleanly */
