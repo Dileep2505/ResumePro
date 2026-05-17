@@ -1177,6 +1177,32 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (err) {
     console.warn('Footer injection failed', err);
   }
+  // If an auth modal/screen is active, add a compact footer inside it so users see links
+  try {
+    const authShell = document.querySelector('.auth-shell');
+    if (authShell && !document.getElementById('rp-auth-footer')) {
+      const afoot = document.createElement('div');
+      afoot.id = 'rp-auth-footer';
+      afoot.style.width = '100%';
+      afoot.style.marginTop = '12px';
+      afoot.style.padding = '12px 14px';
+      afoot.style.borderTop = '1px solid rgba(0,0,0,0.04)';
+      afoot.style.display = 'flex';
+      afoot.style.justifyContent = 'center';
+      afoot.style.gap = '12px';
+      afoot.style.fontSize = '13px';
+      afoot.style.color = 'var(--text3)';
+      afoot.innerHTML = `
+        <div class="rp-auth-copy">© 2026 Resume Pro.</div>
+        <div class="rp-auth-links"><a href="setting.html#privacy-policy">Privacy</a> · <a href="setting.html#terms-conditions">Terms</a> · <a href="setting.html#contact-page">Contact</a></div>
+      `;
+      // Make links inherit color and not be too bright
+      afoot.querySelectorAll('a').forEach(a=>{ a.style.color='var(--text2)'; a.style.textDecoration='none'; });
+      authShell.appendChild(afoot);
+    }
+  } catch (err) {
+    console.warn('Auth footer injection failed', err);
+  }
 });
 
 function getResetTokens() {
