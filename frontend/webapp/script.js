@@ -2821,7 +2821,7 @@ function renderBuilder(state) {
 }
 
 function renderLearning(state) {
-  const page = document.getElementById("page-learning");
+  const page = document.getElementById("page-learning") || document.getElementById("page-jobs");
   if (!page) return;
 
   const resumeData = state.resume_data || {};
@@ -7367,7 +7367,6 @@ function initializeGoogleSignIn() {
   const registerBtn = document.getElementById("google-register-button");
   
   if (!loginBtn || !registerBtn) {
-    console.error('❌ Button containers not found');
     return;
   }
 
