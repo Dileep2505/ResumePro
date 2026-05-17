@@ -138,9 +138,22 @@ function closeAboutModal() {
         <button class="btn btn-primary auth-action" type="button" onclick="confirmPasswordReset()">Reset Password</button>
         <a href="#" class="auth-link" onclick="showAuthForm('login'); return false;">Back to login</a>
       </div>
-      <div class="auth-footer" style="margin-top:12px;border-top:1px solid var(--surface2);padding-top:12px;color:var(--text3);display:flex;justify-content:center;gap:10px;font-size:13px;">
-        <div>© 2026 Resume Pro.</div>
-        <div><a href="setting.html#privacy-policy">Privacy</a> · <a href="setting.html#terms-conditions">Terms</a> · <a href="setting.html#contact-page">Contact</a></div>
+      <div class="auth-footer" style="margin-top:12px;border-top:1px solid var(--surface2);padding-top:12px;color:var(--text3);font-size:13px;">
+        <div class="auth-footer-content" style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+          <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">
+            <div style="max-width:340px;text-align:left;">
+              <div style="font-weight:700;margin-bottom:6px;color:var(--text1);">How it works</div>
+              <div style="font-size:13px;color:var(--text3);">Upload your resume or paste a job description — ResumePro analyzes ATS match, highlights issues, and suggests targeted improvements.</div>
+            </div>
+            <div style="max-width:340px;text-align:left;">
+              <div style="font-weight:700;margin-bottom:6px;color:var(--text1);">How it helps</div>
+              <div style="font-size:13px;color:var(--text3);">Improve your ATS score, tailor your resume to roles, and discover job matches faster with actionable insights.</div>
+            </div>
+          </div>
+          <div style="margin-top:6px;font-size:13px;color:var(--text2);">
+            <a href="setting.html#contact-page">Contact Us</a> · <a href="setting.html#settings-about-card">About Us</a> · <a href="setting.html#privacy-policy">Privacy Policy</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
