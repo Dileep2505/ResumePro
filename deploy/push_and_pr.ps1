@@ -34,23 +34,34 @@ if (-not $upstream) {
 }
 
 # Ensure authentication with gh
-try {
-  gh auth status > $null 2>&1
-} catch {
+$null = gh auth status 2>$null
+if ($LASTEXITCODE -ne 0) {
   Write-Host "You are not authenticated with GitHub CLI. Running 'gh auth login'." -ForegroundColor Yellow
-  gh auth login || Abort 'gh auth login failed or was cancelled.'
+  gh auth login
+  if ($LASTEXITCODE -ne 0) { Abort 'gh auth login failed or was cancelled.' }
 }
 
 # Push main to pages-build-deployment
 $branch = 'main'
 $targetBranch = 'pages-build-deployment'
 Write-Host "Pushing local $branch to upstream:$targetBranch..." -ForegroundColor Cyan
-git fetch upstream || Abort 'git fetch upstream failed.'
-git push upstream "$branch:$targetBranch" || Abort 'git push failed. Ensure you have permission.'
+git fetch upstream
+if ($LASTEXITCODE -ne 0) { Abort 'git fetch upstream failed.' }
+
+$pushRef = "{0}:{1}" -f $branch, $targetBranch
+git push upstream $pushRef
+if ($LASTEXITCODE -ne 0) { Abort 'git push failed. Ensure you have permission.' }
 
 # Create PR
 Write-Host "Creating pull request from $branch -> $targetBranch..." -ForegroundColor Cyan
-$pr = gh pr create --base $targetBranch --head $branch --title "Deploy ad + GSC changes" --body "Deploying ad slots, interstitials, and GSC verification files." --assignee @me
+$prArgs = @(
+  'pr','create',
+  '--base', $targetBranch,
+  '--head', $branch,
+  '--title', 'Deploy frontend responsive fixes',
+  '--body', 'Deploy frontend responsive CSS updates to prevent cut/overlap on small screens.'
+)
+gh @prArgs
 if ($LASTEXITCODE -ne 0) { Abort 'Failed to create PR via gh.' }
 
 Write-Host "PR created. Done." -ForegroundColor Green

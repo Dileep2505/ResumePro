@@ -1458,6 +1458,9 @@ img, .site-logo, svg {
     margin-left: 0 !important;
     padding: 16px;
   }
+  /* Remove the desktop divider and watermark offset on small screens */
+  .main::before { left: 0; }
+  .app::before { display: none; }
   .auth-shell {
     width: min(720px, 96%);
     grid-template-columns: 1fr;
@@ -1470,6 +1473,10 @@ img, .site-logo, svg {
   .auth-card {
     padding: 16px;
   }
+
+  /* Relax grid minimum sizes on small screens so cards can stack cleanly */
+  .grid2, .grid3, .grid4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .grid4 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 }
 
 /* When JS toggles `.app.menu-open` open the sidebar/backdrop for mobile */
@@ -1490,6 +1497,14 @@ img, .site-logo, svg {
   .page-header { gap: 8px; }
   .field-input { font-size: 14px; }
   .auth-title { font-size: 28px; }
+
+  /* Further reduce grid min-width and spacing for very small screens */
+  .grid2, .grid3, .grid4 { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+
+  /* Scale down page title for narrow viewports */
+  .page-title { font-size: clamp(20px, 6vw, 32px); }
+  .page-sub { font-size: 14px; }
+  .page-header { padding: 12px; }
 }
 .card, .auth-card, .project-structured-card {
   word-wrap: break-word;
