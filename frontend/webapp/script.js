@@ -1099,6 +1099,66 @@ document.addEventListener("click", (event) => {
   }
 });
 
+// Create a compact mobile profile button (clones sidebar user card) for small screens
+function ensureMobileProfileCompact() {
+  try {
+    const existing = document.getElementById('mobile-profile-compact');
+    if (existing) return existing;
+
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      const sidebarUser = document.getElementById('sidebar-user-card');
+      if (!sidebarUser) return null;
+
+      const clone = sidebarUser.cloneNode(true);
+      clone.id = 'mobile-profile-compact';
+      clone.style.position = 'fixed';
+      clone.style.right = '12px';
+      clone.style.top = '12px';
+      clone.style.zIndex = '420';
+      clone.style.width = 'auto';
+      clone.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,244,0.9))';
+      clone.style.border = '1px solid rgba(0,0,0,0.06)';
+      clone.style.borderRadius = '12px';
+      clone.style.padding = '6px 8px';
+      clone.style.boxShadow = '0 12px 28px rgba(0,0,0,0.18)';
+      clone.style.display = 'flex';
+      clone.style.alignItems = 'center';
+      clone.style.gap = '8px';
+
+      // remove duplicate sidebar menu button inside clone
+      const menuBtn = clone.querySelector('.sidebar-menu-toggle');
+      if (menuBtn) menuBtn.remove();
+
+      // Make the profile clickable to open settings/profile
+      clone.querySelectorAll('.sidebar-user-main, .sidebar-settings-trigger').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (typeof showPage === 'function') showPage('settings');
+        });
+      });
+
+      document.body.appendChild(clone);
+      return clone;
+    }
+  } catch (err) {
+    console.warn('Mobile profile compact failed', err);
+  }
+  return null;
+}
+
+// Ensure mobile compact profile on load and on resize
+document.addEventListener('DOMContentLoaded', () => {
+  ensureMobileProfileCompact();
+  window.addEventListener('resize', () => {
+    const existing = document.getElementById('mobile-profile-compact');
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      if (!existing) ensureMobileProfileCompact();
+    } else {
+      if (existing) existing.remove();
+    }
+  });
+});
+
 function getResetTokens() {
   try {
     return JSON.parse(localStorage.getItem(AUTH_RESET_TOKENS_KEY) || "{}");
